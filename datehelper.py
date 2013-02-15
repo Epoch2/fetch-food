@@ -1,3 +1,5 @@
+import datetime
+
 weekdays = [u"Måndag", u"Tisdag", u"Onsdag", u"Torsdag", u"Fredag"]
 
 def is_weekday(string):
@@ -7,15 +9,10 @@ def is_weekday(string):
         if day in string:
             return day_of_week
 
-    return False
+    return None
 
-def getDateFromDay(init_date, day):
-    dateSoup = html.select(dateSelectString)
-    plainText = dateSoup[0].contents[0].strip()
-    dateSplit = re.match(REGEX_DATE, plainText).group().split(".")
+def date_from_weekday(init_date, day_of_week):
+    requested_date = init_date + datetime.timedelta(days=day_of_week)
+    requested_date = requested_date.strftime("%Y-%m-%d")
 
-    initialDate = datetime.date(int(dateSplit[0]), int(dateSplit[1]), int(dateSplit[2]))
-    requestedDate = initialDate + datetime.timedelta(days=dayOfWeek)
-    requestedDate_s = requestedDate.strftime("%Y-%m-%d")
-
-    return requestedDate_s
+    return requested_date

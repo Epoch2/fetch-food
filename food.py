@@ -34,8 +34,8 @@ class FoodEntryGenerator:
 
 
     def generate_entry(string):
-        if datecheck.is_weekday(string):
-            self.date
+        if datehelper.is_weekday(string):
+            self.date = datehelper.get_date_from_day
         date = getDateFromDay(html, dayIndex)
 
         if (not re.match(REGEX_WEEK, plainText)
