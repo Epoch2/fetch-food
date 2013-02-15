@@ -12,29 +12,11 @@ import datetime
 import time
 import sys
 import os
+import config
 from bs4 import BeautifulSoup
 
-TARGET_URL = "http://www.amica.se/nackagymnasium"
-CONTENT_OUTER_ID = "ctl00_RegionPageBody_RegionPage_RegionContent_RegionMainContent_RegionMainContentMiddle_MainContentMenu_ctl00_MenuUpdatePanel"
-CONTENT_INNER_CLASS = "ContentArea"
-DATE_INNER_ID = "ctl00_RegionPageBody_RegionPage_RegionContent_RegionMainContent_RegionMainContentMiddle_MainContentMenu_ctl00_HeadingMenu"
-
-ACTION_POST_FOOD = "post-food"
-ACTION_POST_INFO = "post-info"
-ACTION_CLEAR_TABLE = "clear-table"
-
-POST_URL = "www.portaln.se:80"
-POST_PAGE = "/skola/foodapi.php"
-POST_PASSWD = "8e2017a6e2579824ad08ce0ea33b3ebe"
-POST_HEADERS = "{"Content-Type": "application/x-www-form-urlencoded", "Accept": "text/plain"}"
-
-EMAIL_SERVER = "send.one.com:2525"
-EMAIL_USER = "server@jvester.se"
-EMAIL_PASSWD = "server101"
-EMAIL_FROM = "server@jvester.se"
-EMAIL_TO = "jv@jvester.se"
-
 class FoodEntry:
+
     def __init__(self, date, type_, content, info=""):
         self.date = date
         self.type_ = type_
@@ -57,12 +39,13 @@ class FoodEntry:
                 "info" : self.info.encode("utf-8")}
 
 class FoodEntryException(Exception):
+
     def __init__(self, exception):
         self.exception = exception
 
 def getDateFromDay(html, dayOfWeek):
     REGEX_DATE = r"^\d{4}\.\d{2}\.\d{1,2}"  #matches dddd.dd.d(d) where d is digit 0-9
-    dateSelectString = "h2#" + DATE_INNER_ID
+    dateSelectString = "h2#" + config.DATE_INNER_ID
 
     dateSoup = html.select(dateSelectString)
     plainText = dateSoup[0].contents[0].strip()
@@ -181,7 +164,7 @@ def clearTable(url, page, passwd):
 
 
 def mailInfo(subject, content):
-     os.system(("sendemail -q -f " + EMAIL_FROM + " -t " + EMAIL_TO + " -s " + EMAIL_SERVER + " -xu " + EMAIL_USER + " -xp " + EMAIL_PASSWD + " -u " + subject + " -m " + content))
+     os.system(("sendemail -q -f " + config.EMAIL_FROM + " -t " + config.EMAIL_TO + " -s " + config.EMAIL_SERVER + " -xu " + config.EMAIL_USER + " -xp " + passwd.EMAIL_PASSWD + " -u " + subject + " -m " + content))
 
 
 
@@ -192,23 +175,23 @@ def mailInfo(subject, content):
 initTime = time.time()
 
 try:
-    page = urllib2.urlopen(TARGET_URL)
+    page = urllib2.urlopen(config.TARGET_URL)
 except urllib2.URLError as e:
-    mailInfo("FetchFood ERROR!", "Error requesting GET to " + TARGET_URL + " ->\r" + str(e.reason))
+    mailInfo("FetchFood ERROR!", "Error requesting GET to " + config.TARGET_URL + " ->\r" + str(e.reason))
     sys.exit(1)
 except urllib2.HTTPError as e:
-    mailInfo("FetchFood ERROR!", "Error requesting GET to " + TARGET_URL + " ->\r" + str(e.code) + ", " + str(e.reason))
+    mailInfo("FetchFood ERROR!", "Error requesting GET to " + config.TARGET_URL + " ->\r" + str(e.code) + ", " + str(e.reason))
     sys.exit(1)
 pageSoup = BeautifulSoup(page)
 page.close()
-foodEntries = getDateTypeContent(pageSoup, CONTENT_OUTER_ID, CONTENT_INNER_CLASS)
-post(POST_URL, POST_PAGE, POST_HEADERS, ACTION_CLEAR_TABLE)
+foodEntries = getDateTypeContent(pageSoup, config.CONTENT_OUTER_ID, config.CONTENT_INNER_CLASS)
+post(config.POST_URL, config.POST_PAGE, config.POST_HEADERS, config.ACTION_CLEAR_TABLE)
 
 entryCount = 0
 for entry in foodEntries:
     postData = entry.getData();
     try:
-        post(POST_URL, POST_PAGE, POST_HEADERS, ACTION_POST_FOOD, postData)
+        post(config.POST_URL, config.POST_PAGE, config.POST_HEADERS, config.ACTION_POST_FOOD, postData)
     except FoodEntryException as e:
         mailInfo("FetchFood ERROR!", "Error generating entries ->\r" + str(e.exception))
         sys.exit(1)
