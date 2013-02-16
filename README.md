@@ -20,7 +20,6 @@ Components
 * mail.py - functions for sending status/error e-mails
 * config.py - config file
 * passwd.py - (not on github) contains passwords for POSTing data and sending e-mails
-* 
 
 
 The FoodEntry object
