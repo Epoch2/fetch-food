@@ -11,6 +11,7 @@ import sys
 import datehelper
 import food
 import post
+import mail
 import config
 import passwd
 from bs4 import BeautifulSoup

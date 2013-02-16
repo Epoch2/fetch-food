@@ -1,4 +1,6 @@
 import os
+import config
+import passwd
 
 def sendmail(subject, content):
      os.system(("sendemail -q -f " + config.EMAIL_FROM +
