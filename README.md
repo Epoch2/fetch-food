@@ -20,3 +20,13 @@ Components
 * mail.py - functions for sending status/error e-mails
 * config.py - config file
 * passwd.py - (not on github) contains passwords for POSTing data and sending e-mails
+* 
+
+
+The FoodEntry object
+====================
+date = 2013-05-05
+type = Lunch
+content = Swedish Meatballs
+hasinfo = True
+info = Contains meat
