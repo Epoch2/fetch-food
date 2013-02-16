@@ -21,3 +21,4 @@ EMAIL_FROM = "server@jvester.se"
 EMAIL_TO = "jv@jvester.se"
 
 CONFIG_MAIL_ENABLED = True
+
