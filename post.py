@@ -14,14 +14,14 @@ def post(url, page, headers, passwd, action, data={}):
         connection.request("POST", page, data_encoded, headers)
     except httplib.HTTPException as e:
         if config.CONFIG_MAIL_ENABLED:
-            mailInfo("FetchFood ERROR!", "Error requesting POST to " + url + page + " ->\rHTTPError")
+            mail.sendmail("FetchFood ERROR!", "Error requesting POST to " + url + page + " ->\rHTTPError")
         connection.close()
         sys.exit(1)
     response = connection.getresponse()
     response_data = response.read()
 
     if not (int(response_data[0]) == 0 and int(response_data[1]) == 0) and config.CONFIG_MAIL_ENABLED:
-        sendmail("FetchFood ERROR!", "Error requesting POST to " + url + page + " ->\r" + str(response_data))
+        mail.sendmail("FetchFood ERROR!", "Error requesting POST to " + url + page + " ->\r" + str(response_data))
 
     return True
 
