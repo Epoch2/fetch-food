@@ -84,6 +84,6 @@ for type_, time in exec_times.iteritems():
 post.post(config.POST_URL, config.POST_PAGE, config.POST_HEADERS, passwd.POST_PASSWD, config.ACTION_POST_INFO, data)
 
 if config.CONFIG_MAIL_ENABLED:
-    mail_content = "fetchfood.py successfully ran at:\r\r" + datehelper.current_date() + "\r\rEntries posted: " + str(entrycount) + "\rTotal execution time: " + round_time(exec_times["total"][1]) + "s" + "\r    Time requesting GET to " + config.TARGET_URL + " :" + round_time(exec_times["target_request"][1]) + "s" + "\r    Time generating entries: " + round_time(exec_times["generate_entries"][1]) + "s" + "\r    Time clearing DB: " + round_time(exec_times["clear_table"][1]) + "s" + "\r    Time posting to DB: " + round_time(exec_times["post_entry_all"][1]) + "s"
+    mail_content = "fetchfood.py successfully ran at:\r\r" + datehelper.current_date() + "\r\rEntries posted: " + str(entrycount) + "\rTotal execution time: " + round_time(exec_times["total"][1]) + "s" + "\r    Time getting menu: " + round_time(exec_times["target_request"][1]) + "s" + "\r    Time generating entries: " + round_time(exec_times["generate_entries"][1]) + "s" + "\r    Time clearing DB: " + round_time(exec_times["clear_table"][1]) + "s" + "\r    Time posting to DB: " + round_time(exec_times["post_entry_all"][1]) + "s"
     mail.sendmail("FetchFood Completed!", mail_content)
 sys.exit(0)

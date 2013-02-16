@@ -1,5 +1,6 @@
 import urllib
 import httplib
+import mail
 import config
 import passwd
 
@@ -20,7 +21,7 @@ def post(url, page, headers, passwd, action, data={}):
     response_data = response.read()
 
     if not (int(response_data[0]) == 0 and int(response_data[1]) == 0) and config.CONFIG_MAIL_ENABLED:
-        sendmail("FetchFood ERROR!", "Error requesting POST to " + url + page + " ->\r" + response_data)
+        sendmail("FetchFood ERROR!", "Error requesting POST to " + url + page + " ->\r" + str(response_data))
 
     return True
 
@@ -32,7 +33,7 @@ def post_entries(entrylist):
             post(config.POST_URL, config.POST_PAGE, config.POST_HEADERS, passwd.POST_PASSWD, config.ACTION_POST_FOOD, postdata)
         except FoodEntryException as e:
             if config.CONFIG_MAIL_ENABLED:
-                sendmail("FetchFood ERROR!", "Error generating entries ->\r" + str(e.exception))
+                mail.sendmail("FetchFood ERROR!", "Error generating entries ->\r" + str(e.exception))
             sys.exit(1)
         else:
             entrycount += 1
