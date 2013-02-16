@@ -16,7 +16,7 @@ def to_string(date):
     return date.strftime("%Y-%m-%d")
 
 def current_date():
-    return (datetime.datetime.now().strftime("%Y-%m-%d\r%H:%M:%S"))
+    return datetime.datetime.now().strftime("%Y-%m-%d\r%H:%M:%S")
 
 def weekday_to_date(init_date, day_of_week):
     date = init_date + datetime.timedelta(days=day_of_week)
