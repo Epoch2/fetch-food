@@ -26,7 +26,7 @@ The FoodEntry object
 ====================
 ```python
 date = 2013-05-05
-type = Lunch
+type_ = Lunch
 content = "Swedish Meatballs"
 hasinfo = True
 info = "Contains meat"
