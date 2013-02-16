@@ -1,6 +1,6 @@
 #fetch-food
 ===========
-fetch-food is a back end web scraper with the purpose to provide current menu data from Nacka Gymnasium's cantina's web page to SkolportalN 2.0. It uses BeautifulSoup along with the built in python HTML parser.
+fetch-food is a back end web scraper with the purpose to provide current menu data from Nacka Gymnasium's cantina's web page to [SkolportalN 2.0](http://portaln.se/skola). It uses BeautifulSoup along with the built in python HTML parser.
 
 
 ##Functionality
