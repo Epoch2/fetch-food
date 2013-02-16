@@ -37,15 +37,15 @@ def generate_food_entries(date, soup):
     return entrylist
 
 def round_time(time):
-    return str(round(time, 2))
+    return str(round(time, 4))
 
 #####
 
-exec_timekeys = ("total", "target_request", "generate_entries", "clear_table", "post_entry_all")
+exec_timekeys = ["total", "target_request", "generate_entries", "clear_table", "post_entry_all"]
 exec_timekeys_description = ["Total execution time", "Time getting menu", "Time generating entries", "Time clearing DB", "Time posting to DB"]
-exec_times = dict.fromkeys(exec_timekeys, [0, 0])
-exec_times["total"][0] = time.time()
-exec_times["target_request"][0] = time.time()
+exec_times = [0]*5
+exec_times[0] = time.clock()
+exec_times[1] = time.clock()
 
 try:
     page = urllib2.urlopen(config.TARGET_URL)
@@ -58,7 +58,7 @@ except urllib2.HTTPError as e:
         mail.sendmail("FetchFood ERROR!", "Error requesting GET to " + config.TARGET_URL + " ->\r" + str(e.code) + ", " + str(e.reason))
     sys.exit(1)
 
-exec_times["target_request"][1] = time.time() - exec_times["target_request"][0]
+exec_times[1] = time.clock() - exec_times[1]
 
 page_soup = BeautifulSoup(page)
 page.close()
@@ -68,31 +68,23 @@ date = datehelper.find_date(date_plaintext)
 content_soup = page_soup.select("div#" + config.CONTENT_OUTER_ID +
                                 " div[class-=" + config.CONTENT_INNER_CLASS +
                                 "] p")
-exec_times["generate_entries"][0] = time.time()
+exec_times[2] = time.clock()
 entrylist = generate_food_entries(date, content_soup)
-exec_times["generate_entries"][1] = time.time() - exec_times["generate_entries"][0]
-exec_times["clear_table"][0] = time.time()
+exec_times[2] = time.clock() - exec_times[2]
+exec_times[3] = time.clock()
 post.post(config.POST_URL, config.POST_PAGE, config.POST_HEADERS, passwd.POST_PASSWD, config.ACTION_CLEAR_TABLE) #Clear database table.
-exec_times["clear_table"][1] = time.time() - exec_times["clear_table"][0]
-exec_times["post_entry_all"][0] = time.time()
+exec_times[3] = time.clock() - exec_times[3]
+exec_times[4] = time.clock()
 entrycount = post.post_entries(entrylist)
-exec_times["post_entry_all"][1] = time.time() - exec_times["post_entry_all"][0]
-exec_times["total"][1] = time.time() - exec_times["total"][0]
+exec_times[4] = time.clock() - exec_times[4]
+exec_times[0] = time.clock() - exec_times[0]
 
-data = {}
-for type_, time in exec_times.iteritems():
-    data[type_] = time
-post.post(config.POST_URL, config.POST_PAGE, config.POST_HEADERS, passwd.POST_PASSWD, config.ACTION_POST_INFO, data)
-
-mail_content = "fetchfood.py successfully ran at:\n\n" + datehelper.current_date() + "\n\nEntries posted: " + str(entrycount)
+mail_content = "fetchfood.py successfully ran at:\r\r" + datehelper.current_date() + "\r\rEntries posted: " + str(entrycount)
 exec_times_string_list = [mail_content]
-i = 1
-for key, value in exec_timekeys:
-    i += 1
-    exec_times_string_list.append(exec_timekeys_description[i] + " :" + round_time(value))
+for i, t in enumerate(exec_times):
+    exec_times_string_list.append("\r\t" + exec_timekeys_description[i] + ": " + round_time(t))
 mail_content = "".join(exec_times_string_list)
 
-#mail_content = ("fetchfood.py successfully ran at:\n\n" + datehelper.current_date() + "\n\nEntries posted: " + str(entrycount) + "\nTotal execution time: " + str(round_time(exec_times["total"][1])) + "s" + "\n    -Time getting menu: " + str(round_time(exec_times["target_request"][1])) + "s" + "\n    -Time generating entries: " + str(round_time(exec_times["generate_entries"][1])) + "s" + "\n    -Time clearing DB: " + str(round_time(exec_times["clear_table"][1])) + "s" + "\n    -Time posting to DB: " + str(round_time(exec_times["post_entry_all"][1])) + "s")
 print mail_content
 if config.CONFIG_MAIL_ENABLED:
     mail.sendmail("FetchFood Completed!", mail_content)
