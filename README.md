@@ -7,5 +7,5 @@ How it works
 1. GET request to http://www.amica.se/nackagymnasium returns the web page containing the menu.
 2. Parse the HTML and trim the data to only contain the sought data.
 3. Parse the food entries in the menu along with the menu's date-stamp and create structurized entries.
-4. POST the entries to portaln.se/skola
+4. POST the entries to http://portaln.se/skola
 
