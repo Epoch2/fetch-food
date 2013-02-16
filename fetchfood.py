@@ -11,6 +11,7 @@ import time
 import sys
 import datehelper
 import food
+import post
 import config
 from bs4 import BeautifulSoup
 
@@ -23,15 +24,16 @@ def generate_food_entries(date, soup):
         plaintext = p_tag.contents[0].strip() #html -> plaintext
         entry = food_generator.generate_entry(plaintext)
 
-        if entry.hasinfo:
-            entrylist_special.append(entry)
-        else:
-            entrylist.append(entry)
+        if entry is not None:
+            if entry.hasinfo:
+                entrylist_special.append(entry)
+            else:
+                entrylist.append(entry)
 
     for entry in entrylist_special:
         entry.info = food_generator.generated_info
 
-    return entryList
+    return entrylist
 
 def round_time(time):
     return str(round(time, 2))
