@@ -33,6 +33,7 @@ def generate_food_entries(date, soup):
 
     for entry in entrylist_special:
         entry.info = food_generator.generated_info
+        entrylist.append(entry)
 
     return entrylist
 

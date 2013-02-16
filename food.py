@@ -38,23 +38,27 @@ class FoodEntryGenerator:
     REGEX_WEEK = r"v\.\d{1,2}$"             #matches v.3, v.24, etc
     REGEX_INFO = r"^\*=.+$"                 #matches *=innehåller fläskött, etc
     REGEX_GOODMEAL = r"^Smaklig.*"          #matches Smaklig Måltid
-    REGEX_WHITESPACE = r"^$"                #matches ""
+    REGEX_NEWLINE = r"^$"                   #matches ""
 
     def __init__(self, init_date):
+        self.init_date = init_date
         self.date = init_date
+        self.date_string = datehelper.to_string(self.date)
         self.weekday = 0
         self.generated_info = None
 
     def generate_entry(self, entry_string):
-        new_weekday = datehelper.is_weekday(entry_string, self.weekday)
-        if new_weekday != self.weekday:
-            self.weekday = new_weekday
-            self.date = datehelper.weekday_to_date(self.date, self.weekday)
-            return
+        if datehelper.is_weekday(entry_string):
+            new_weekday = datehelper.weekday_to_weeknumber(entry_string, self.weekday)
+            if new_weekday > self.weekday:
+                self.weekday = new_weekday
+                self.date = datehelper.weekday_to_date(self.init_date, self.weekday)
+                self.date_string = datehelper.to_string(self.date)
+            return None
 
         elif (not re.match(FoodEntryGenerator.REGEX_WEEK, entry_string)
             and not re.match(FoodEntryGenerator.REGEX_GOODMEAL, entry_string)
-            and not re.match(FoodEntryGenerator.REGEX_WHITESPACE, entry_string)
+            and not re.match(FoodEntryGenerator.REGEX_NEWLINE, entry_string)
             and not re.match(FoodEntryGenerator.REGEX_INFO, entry_string)):
             typeobject = re.match(FoodEntryGenerator.REGEX_TYPE, entry_string)
 
@@ -69,9 +73,12 @@ class FoodEntryGenerator:
             content = entry_string.replace(type_, "").strip()
 
             if "*" in content:
-                return FoodEntry(self.date, type_, content.replace("*", ""), True)
+                return FoodEntry(self.date_string, type_, content.replace("*", ""), True)
             else:
-                return FoodEntry(self.date, type_, content, False)
+                return FoodEntry(self.date_string, type_, content, False)
 
         elif re.match(FoodEntryGenerator.REGEX_INFO, entry_string):
-            self.info = re.match(FoodEntryGenerator.REGEX_INFO, entry_string).group().replace("*=", "").strip()
+            self.generated_info = re.match(FoodEntryGenerator.REGEX_INFO, entry_string).group().replace("*=", "").strip()
+
+        else:
+            return None
