@@ -6,9 +6,9 @@ DATE_INNER_ID = "ctl00_RegionPageBody_RegionPage_RegionContent_RegionMainContent
 FOOD_DEFAULT_TYPE = "Extra"
 FOOD_UNKNOWN_TYPE = "UNKNOWN_TYPE"
 
-ACTION_POST_FOOD = "post-food"
-ACTION_POST_INFO = "post-info"
-ACTION_CLEAR_TABLE = "clear-table"
+ACTION_POST_FOOD = "post_food"
+ACTION_POST_INFO = "post_info"
+ACTION_CLEAR_TABLE = "clear_table"
 
 POST_URL = "www.portaln.se:80"
 POST_PAGE = "/skola/foodapi.php"

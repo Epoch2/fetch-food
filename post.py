@@ -18,10 +18,9 @@ def post(url, page, headers, passwd, action, data={}):
         sys.exit(1)
     response = connection.getresponse()
     response_data = response.read()
-    print response_data.strip()
 
-    #if not (int(response_data[0]) == 0 and int(response_data[1]) == 0) and config.CONFIG_MAIL_ENABLED:
-    #    sendmail("FetchFood ERROR!", "Error requesting POST to " + url + page + " ->\r" + response_data)
+    if not (int(response_data[0]) == 0 and int(response_data[1]) == 0) and config.CONFIG_MAIL_ENABLED:
+        sendmail("FetchFood ERROR!", "Error requesting POST to " + url + page + " ->\r" + response_data)
 
     return True
 
