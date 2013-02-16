@@ -20,4 +20,4 @@ EMAIL_USER = "server@jvester.se"
 EMAIL_FROM = "server@jvester.se"
 EMAIL_TO = "jv@jvester.se"
 
-CONFIG_MAIL_ENABLED = False
+CONFIG_MAIL_ENABLED = True
