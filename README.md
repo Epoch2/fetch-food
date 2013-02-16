@@ -16,7 +16,7 @@ Components
 * fetchfood.py - main
 * food.py - classes and functions for parsing and handling food entries
 * post.py - functions for POSTing data to server
-* datehelper.py - helper functions for parsing and converting dates and times
+* datehelper.py - helper functions for parsing and converting dates
 * mail.py - functions for sending status/error e-mails
 * config.py - config file
 * passwd.py - (not on github) contains passwords for POSTing data and sending e-mails
