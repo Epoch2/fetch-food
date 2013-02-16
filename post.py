@@ -37,5 +37,4 @@ def post_entries(entrylist):
             sys.exit(1)
         else:
             entrycount += 1
-
     return entrycount
