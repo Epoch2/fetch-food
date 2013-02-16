@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+import re
 import datetime
 
 weekdays = [u"Måndag", u"Tisdag", u"Onsdag", u"Torsdag", u"Fredag"]
@@ -12,7 +14,7 @@ def is_weekday(string, currentday):
     return currentday
 
 def current_date():
-    return datetime.datetime.now().strftime("%Y-%m-%d\r%H:%M:%S")
+    return (datetime.datetime.now().strftime("%Y-%m-%d\r%H:%M:%S"))
 
 def weekday_to_date(init_date, day_of_week):
     date = init_date + datetime.timedelta(days=day_of_week)
@@ -22,7 +24,7 @@ def weekday_to_date(init_date, day_of_week):
 
 def find_date(string):
     REGEX_DATE = r"^\d{4}\.\d{2}\.\d{1,2}"  #matches dddd.dd.d(d) where d is digit 0-9
-    date_split = re.match(REGEX_DATE, plaintext).group().split(".")
-    date = datetime.date(int(dateSplit[0]), int(dateSplit[1]), int(dateSplit[2]))
+    date_split = re.match(REGEX_DATE, string).group().split(".")
+    date = datetime.date(int(date_split[0]), int(date_split[1]), int(date_split[2]))
 
     return date

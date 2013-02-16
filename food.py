@@ -1,4 +1,5 @@
-import datecheck
+# -*- coding: utf-8 -*-
+import datehelper
 import config
 
 class FoodEntry:
@@ -70,9 +71,9 @@ class FoodEntryGenerator:
             content = entry_string.replace(type_, "").strip()
 
             if "*" in content:
-                return FoodEntry(date, type_, content.replace("*", ""), True))
+                return FoodEntry(date, type_, content.replace("*", ""), True)
             else:
-                return FoodEntry(date, type_, content, False))
+                return FoodEntry(date, type_, content, False)
 
         elif re.match(REGEX_INFO, entry_string):
             self.info = re.match(REGEX_INFO, entry_string).group().replace("*=", "").strip()
