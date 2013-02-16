@@ -1,4 +1,5 @@
 import datecheck
+import config
 
 class FoodEntry:
 
@@ -9,65 +10,76 @@ class FoodEntry:
         self.hasinfo = hasinfo
         self.info = info
 
-    def compareTo(self, cprObject):
-        if (self.date == cprObject.date and
-            self.type_ == cprObject.type_ and
-            self.content == cprObject.content and
-            self.info == cprObject.info):
+    def __eq__(self, other):
+        if (self.date == other.date and
+            self.type_ == other.type_ and
+            self.content == other.content and
+            self.info == other.info):
             return True
         else:
             return False
 
-    def getData(self):
+    def get_data(self):
         return {"date" : self.date.encode("utf-8"),
                 "type" : self.type_.encode("utf-8"),
                 "content" : self.content.encode("utf-8"),
                 "info" : self.info.encode("utf-8")}
 
+class FoodEntryException(Exception):
+
+    def __init__(self, exception):
+        self.exception = exception
+
 class FoodEntryGenerator:
+
+    REGEX_TYPE = r".+?(?=\s*[A-ZÅÄÖ])"      #matches Lunch, Soppa, etc
+    REGEX_WEEK = r"v\.\d{1,2}$"             #matches v.3, v.24, etc
+    REGEX_INFO = r"^\*=.+$"                 #matches *=innehåller fläskött, etc
+    REGEX_GOODMEAL = r"^Smaklig.*"          #matches Smaklig Måltid
+    REGEX_WHITESPACE = r"^$"                #matches ""
 
     def __init__(self, init_date):
         self.date = init_date
-        self.weekday_index = 0
+        self.weekday = 0
+        self.generated_info = None
 
-    def increase_day(self, amount):
+    def increase_day_by(self, amount):
+        self.weekday += amount
 
+    def generate_entry(entry_string):
+        new_weekday = datehelper.is_weekday(entry_string, self.weekday)
+        if new_weekday != self.weekday:
+            self.weekday = new_weekday
+            self.date = datehelper.weekday_to_date(init_date, self.weekday)
+            return
 
-    def generate_entry(string):
-        if datehelper.is_weekday(string):
-            self.date = datehelper.get_date_from_day
-        date = getDateFromDay(html, dayIndex)
+        elif (not re.match(REGEX_WEEK, entry_string)
+            and not re.match(REGEX_GOODMEAL, entry_string)
+            and not re.match(REGEX_WHITESPACE, entry_string)
+            and not re.match(REGEX_INFO, entry_string)):
+            typeobject = re.match(REGEX_TYPE, entry_string)
 
-        if (not re.match(REGEX_WEEK, plainText)
-            and not re.match(REGEX_GOODMEAL, plainText)
-            and not re.match(REGEX_WHITESPACE, plainText)
-            and not re.match(REGEX_INFO, plainText)): #if row isn't dayofweek, weeknumber, type, empty, goodmeal, or info, then create entry
-            #date = getDateFromDay(html, dayIndex)
-            typeObject = re.match(REGEX_TYPE, plainText)
-
-            if typeObject is not None:
+            if typeobject is not None:
                 try:
-                    type_ = typeObject.group().strip()
+                    type_ = typeobject.group().strip()
                 except AttributeError:
-                    type_ = UNKNOWN_TYPE
+                    type_ = config.FOOD_UNKNOWN_TYPE
             else:
-                type_ = DEFAULT_TYPE
+                type_ = config.FOOD_DEFAULT_TYPE
 
-            content = plainText.replace(type_, "").strip()
+            content = entry_string.replace(type_, "").strip()
 
             if "*" in content:
-                specialList.append(FoodEntry(date, type_, content.replace("*", "")))
+                return FoodEntry(date, type_, content.replace("*", ""), True))
             else:
-                entryList.append(FoodEntry(date, type_, content))
+                return FoodEntry(date, type_, content, False))
 
-        elif re.match(REGEX_INFO, plainText):
-            info = re.match(REGEX_INFO, plainText).group().replace("*=", "").strip()
-            for entry in specialList:
-                entry.info == info
+        elif re.match(REGEX_INFO, entry_string):
+            self.info = re.match(REGEX_INFO, entry_string).group().replace("*=", "").strip()
 
-        elif (not re.match(REGEX_INFO, plainText)
-            and not re.match(REGEX_WHITESPACE, plainText)):
-            type_ = DEFAULT_TYPE
-            content = plainText.replace(type_, "").replace("*", "").strip()
+        #elif (not re.match(REGEX_INFO, entry_string)
+        #    and not re.match(REGEX_WHITESPACE, entry_string)):
+         #   type_ = config.FOOD_DEFAULT_TYPE
+          #  content = entry_string.replace(type_, "").replace("*", "").strip()
 
-            return
+           # return

@@ -4,137 +4,83 @@
 # FetchFood
 # Fetch menu data from page, structurize it and POST it to webserver.
 
-import urllib
 import urllib2
 import httplib
 import re
-import datetime
 import time
 import sys
-import os
 import config
 from bs4 import BeautifulSoup
 
-class FoodEntryException(Exception):
+def generate_food_entries(date, soup):
+    entrylist = []
+    entrylist_special = []
+    food_generator = food.FoodEntryGenerator(date)
 
-    def __init__(self, exception):
-        self.exception = exception
+    for p_tag in contentsoup:
+        plaintext = p_tag.contents[0].strip() #html -> plaintext
+        entry = food_generator.generate_entry(plaintext)
 
-def getDateFromDay(html, dayOfWeek):
-    REGEX_DATE = r"^\d{4}\.\d{2}\.\d{1,2}"  #matches dddd.dd.d(d) where d is digit 0-9
-    dateSelectString = "h2#" + config.DATE_INNER_ID
+        if entry.hasinfo:
+            entrylist_special.append(entry)
+        else:
+            entrylist.append(entry)
 
-    dateSoup = html.select(dateSelectString)
-    plainText = dateSoup[0].contents[0].strip()
-    dateSplit = re.match(REGEX_DATE, plainText).group().split(".")
-
-    initialDate = datetime.date(int(dateSplit[0]), int(dateSplit[1]), int(dateSplit[2]))
-    requestedDate = initialDate + datetime.timedelta(days=dayOfWeek)
-    requestedDate_s = requestedDate.strftime("%Y-%m-%d")
-
-    return requestedDate_s
-
-def getDateTypeContent(html, outerId, innerClass):
-    REGEX_TYPE = r".+?(?=\s*[A-ZÅÄÖ])"      #matches Lunch, Soppa, etc
-    REGEX_WEEK = r"v\.\d{1,2}$"             #matches v.3, v.24, etc
-    REGEX_INFO = r"^\*=.+$"                 #matches *=innehåller fläskött, etc
-    REGEX_GOODMEAL = r"^Smaklig.*"          #matches Smaklig Måltid
-    REGEX_WHITESPACE = r"^$"                #matches ""
-
-    DEFAULT_TYPE = "Mat"
-    UNKNOWN_TYPE = "UNKNOWN_TYPE"
-
-    weekdays = [u"Måndag", u"Tisdag", u"Onsdag", u"Torsdag", u"Fredag"]
-    dayContent = [[]*5 for x in xrange(5)]  #5*5 array
-    entryList = []
-    specialList = []
-    dayIndex = -1
-    matchedWeek = False
-    selectString = "div#" + outerId + " div[class-=" + innerClass + "] p"
-    contentSoup = html.select(selectString)
-
-    for pTag in contentSoup:
-        plainText = pTag.contents[0].strip() #html -> plaintext
-        food.generate_entry(plainText)
-
-    if (len(weekdays) > 0):
-        raise FoodEntryException("Days missing from menu.")
-
-    for entry in specialList:
-        entryList.append(entry)
+    for entry in entrylist_special:
+        entry.info = food_generator.generated_info
 
     return entryList
 
-def post(url, page, headers, action, data={}):
-    data['action'] = action
-    data_encoded = urllib.urlencode(data)
-    connection = httplib.HTTPConnection(url)
+def round_time(time):
+    return str(round(time, 2))
 
-    try:
-        connection.request("POST", page, data_encoded, headers)
-    except httplib.HTTPException as e:
-        mailInfo("FetchFood ERROR!", "Error requesting POST to " + url + page + " ->\rHTTPError")
-        connection.close()
-        sys.exit(1)
-    response = connection.getresponse()
-    responseData = response.read()
-
-    return True
-
-def clearTable(url, page, passwd):
-    passwd_structured = {"passwd" : passwd}
-    passwd_encoded = urllib.urlencode(passwd_structured)
-    headers = {"Content-Type": "application/x-www-form-urlencoded", "Accept": "text/plain"}
-    connection = httplib.HTTPConnection(url)
-
-    try:
-        connection.request("POST", page, passwd_encoded, headers)
-    except httplib.HTTPException as e:
-        mailInfo("FetchFood ERROR!", "Error clearing table by requesting post to " + url + page + " -> \rHTTPError")
-        connection.close()
-        sys.exit(1)
-    response = connection.getresponse()
-    responseData = response.read()
-
-
-def mailInfo(subject, content):
-     os.system(("sendemail -q -f " + config.EMAIL_FROM + " -t " + config.EMAIL_TO + " -s " + config.EMAIL_SERVER + " -xu " + config.EMAIL_USER + " -xp " + passwd.EMAIL_PASSWD + " -u " + subject + " -m " + content))
-
-
-
-#############
-
-
-
-initTime = time.time()
+#####
+exec_timekeys = ("total", "target_request", "generate_entries" "clear_table", "post_entry_all")
+exec_times = dict.fromkeys(exec_timekeys, [])
+exec_times["total"][0] = time.time()
+exec_times["target_request"][0] = time.time()
 
 try:
     page = urllib2.urlopen(config.TARGET_URL)
 except urllib2.URLError as e:
-    mailInfo("FetchFood ERROR!", "Error requesting GET to " + config.TARGET_URL + " ->\r" + str(e.reason))
+    if config.CONFIG_MAIL_ENABLED:
+        mailInfo("FetchFood ERROR!", "Error requesting GET to " + config.TARGET_URL + " ->\r" + str(e.reason))
     sys.exit(1)
 except urllib2.HTTPError as e:
-    mailInfo("FetchFood ERROR!", "Error requesting GET to " + config.TARGET_URL + " ->\r" + str(e.code) + ", " + str(e.reason))
+    if config.CONFIG_MAIL_ENABLED:
+        mailInfo("FetchFood ERROR!", "Error requesting GET to " + config.TARGET_URL + " ->\r" + str(e.code) + ", " + str(e.reason))
     sys.exit(1)
-pageSoup = BeautifulSoup(page)
+
+exec_times["target_request"][1] = time.time() - exec_times["target_request"][0]
+
+page_soup = BeautifulSoup(page)
 page.close()
-foodEntries = getDateTypeContent(pageSoup, config.CONTENT_OUTER_ID, config.CONTENT_INNER_CLASS)
-post(config.POST_URL, config.POST_PAGE, config.POST_HEADERS, config.ACTION_CLEAR_TABLE)
+date_soup = page_soup.select("h2#" + config.DATE_INNER_ID)
+date_plaintext = dateSoup[0].contents[0].strip()
+date = datehelper.find_date(date_plaintext)
+content_soup = page_soup.select("div#" + config.CONTENT_OUTER_ID +
+                                " div[class-=" + config.CONTENT_INNER_CLASS +
+                                "] p")
+exec_times["generate_entries"][0] = time.time()
+entrylist = generate_food_entries(date, contentsoup)
+exec_times["generate_entries"][1] = time.time() - exec_times["generate_entries"][0]
+exec_times["clear_table"][0] = time.time()
+post.post(config.POST_URL, config.POST_PAGE, config.POST_HEADERS, config.ACTION_CLEAR_TABLE) #Clear database table.
+exec_times["clear_table"][1] = time.time() - exec_times["clear_table"][0]
+exec_times["post_entry_all"][0] = time.time()
+entrycount = post.post_entries(entrylist)
+exec_times["post_entry_all"][1] = time.time() - exec_times["post_entry_all"][0]
+exec_times["total"][1] = time.time() - exec_times["total"][0]
 
-entryCount = 0
-for entry in foodEntries:
-    postData = entry.getData();
-    try:
-        post(config.POST_URL, config.POST_PAGE, config.POST_HEADERS, config.ACTION_POST_FOOD, postData)
-    except FoodEntryException as e:
-        mailInfo("FetchFood ERROR!", "Error generating entries ->\r" + str(e.exception))
-        sys.exit(1)
-    else:
-        entryCount += 1
+mailContent = "fetchfood.py successfully ran at:\r\r" +
+                datehelper.current_date() +
+                "\r\rEntries posted: " + str(entryCount) +
+                "\rTotal execution time: " + round_time(exec_times["total"][1]) + "s" +
+                "\r    Time requesting GET to " + config.TARGET_URL + " :" + round_time(exec_times["target_request"][1]) + "s" +
+                "\r    Time generating entries: " + round_time(exec_times["generate_entries"][1]) + "s" +
+                "\r    Time clearing DB: " + round_time(exec_times["clear_table"][1]) + "s" +
+                "\r    Time posting to DB: " + round_time(exec_times["post_entry_all"][1]) + "s"
 
-endTime = time.time()
-executionTime = endTime - initTime
-mailContent = "fetchfood.py successfully ran at:\r\r" + datetime.datetime.now().strftime("%Y-%m-%d\r%H:%M:%S") + "\r\rEntries posted: " + str(entryCount) + "\rExecution time: " + str(round(executionTime, 2)) + "s"
-mailInfo("FetchFood Completed!", mailContent)
+if config.CONFIG_MAIL_ENABLED:
+    mail.sendmail("FetchFood Completed!", mailContent)
 sys.exit(0)
-
