@@ -40,6 +40,7 @@ def round_time(time):
     return round(time, 2)
 
 #####
+
 exec_timekeys = ("total", "target_request", "generate_entries", "clear_table", "post_entry_all")
 exec_times = dict.fromkeys(exec_timekeys, [0, 0])
 exec_times["total"][0] = time.time()
