@@ -85,7 +85,6 @@ for i, t in enumerate(exec_times):
     exec_times_string_list.append("\r\t" + exec_timekeys_description[i] + ": " + round_time(t))
 mail_content = "".join(exec_times_string_list)
 
-print mail_content
 if config.CONFIG_MAIL_ENABLED:
     mail.sendmail("FetchFood Completed!", mail_content)
 sys.exit(0)
