@@ -45,7 +45,7 @@ class FoodEntryGenerator:
         self.date = init_date
         self.date_string = datehelper.to_string(self.date)
         self.weekday = 0
-        self.generated_info = 0
+        self.generated_info = None
 
     def generate_entry(self, entry_string):
         if datehelper.is_weekday(entry_string):
