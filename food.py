@@ -45,9 +45,6 @@ class FoodEntryGenerator:
         self.weekday = 0
         self.generated_info = None
 
-    def increase_day_by(self, amount):
-        self.weekday += amount
-
     def generate_entry(self, entry_string):
         new_weekday = datehelper.is_weekday(entry_string, self.weekday)
         if new_weekday != self.weekday:
@@ -78,10 +75,3 @@ class FoodEntryGenerator:
 
         elif re.match(FoodEntryGenerator.REGEX_INFO, entry_string):
             self.info = re.match(FoodEntryGenerator.REGEX_INFO, entry_string).group().replace("*=", "").strip()
-
-        #elif (not re.match(REGEX_INFO, entry_string)
-        #    and not re.match(REGEX_WHITESPACE, entry_string)):
-         #   type_ = config.FOOD_DEFAULT_TYPE
-          #  content = entry_string.replace(type_, "").replace("*", "").strip()
-
-           # return
