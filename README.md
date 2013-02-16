@@ -24,10 +24,10 @@ Components
 
 The FoodEntry object
 ====================
-'''python
+```python
 date = 2013-05-05
 type = Lunch
 content = "Swedish Meatballs"
 hasinfo = True
 info = "Contains meat"
-'''
+```
