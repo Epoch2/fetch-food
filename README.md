@@ -25,7 +25,7 @@ fetch-food is a back end web scraper with the purpose to provide current menu da
 ##The FoodEntry object
 ====================
 ```python
-date = 2013-05-05
+date = "2013-05-05"
 type_ = "Lunch"
 content = "Swedish Meatballs"
 hasinfo = True
