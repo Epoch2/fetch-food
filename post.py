@@ -19,8 +19,8 @@ def post(url, page, headers, passwd, action, data={}):
     response = connection.getresponse()
     response_data = response.read().strip()
 
-    #if not (int(response_data[0]) == 0 and int(response_data[1]) == 0):
-    #    sendmail("FetchFood ERROR!", "Error requesting POST to " + url + page + " ->\r" + response_data)
+    if not (int(response_data[0]) == 0 and int(response_data[1]) == 0):
+        sendmail("FetchFood ERROR!", "Error requesting POST to " + url + page + " ->\r" + response_data)
 
     return True
 
