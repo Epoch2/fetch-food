@@ -5,7 +5,6 @@
 # Fetch menu data from page, structurize it and POST it to webserver.
 
 import urllib2
-import httplib
 import re
 import time
 import sys
@@ -13,6 +12,7 @@ import datehelper
 import food
 import post
 import config
+import passwd
 from bs4 import BeautifulSoup
 
 def generate_food_entries(date, soup):
@@ -69,14 +69,14 @@ exec_times["generate_entries"][0] = time.time()
 entrylist = generate_food_entries(date, content_soup)
 exec_times["generate_entries"][1] = time.time() - exec_times["generate_entries"][0]
 exec_times["clear_table"][0] = time.time()
-post.post(config.POST_URL, config.POST_PAGE, config.POST_HEADERS, config.ACTION_CLEAR_TABLE) #Clear database table.
+post.post(config.POST_URL, config.POST_PAGE, config.POST_HEADERS, passwd.POST_PASSWD, config.ACTION_CLEAR_TABLE) #Clear database table.
 exec_times["clear_table"][1] = time.time() - exec_times["clear_table"][0]
 exec_times["post_entry_all"][0] = time.time()
 entrycount = post.post_entries(entrylist)
 exec_times["post_entry_all"][1] = time.time() - exec_times["post_entry_all"][0]
 exec_times["total"][1] = time.time() - exec_times["total"][0]
 
-mail_content = "fetchfood.py successfully ran at:\r\r" + datehelper.current_date() + "\r\rEntries posted: " + str(entryCount) + "\rTotal execution time: " + round_time(exec_times["total"][1]) + "s" + "\r    Time requesting GET to " + config.TARGET_URL + " :" + round_time(exec_times["target_request"][1]) + "s" + "\r    Time generating entries: " + round_time(exec_times["generate_entries"][1]) + "s" + "\r    Time clearing DB: " + round_time(exec_times["clear_table"][1]) + "s" + "\r    Time posting to DB: " + round_time(exec_times["post_entry_all"][1]) + "s"
+mail_content = "fetchfood.py successfully ran at:\r\r" + datehelper.current_date() + "\r\rEntries posted: " + str(entrycount) + "\rTotal execution time: " + round_time(exec_times["total"][1]) + "s" + "\r    Time requesting GET to " + config.TARGET_URL + " :" + round_time(exec_times["target_request"][1]) + "s" + "\r    Time generating entries: " + round_time(exec_times["generate_entries"][1]) + "s" + "\r    Time clearing DB: " + round_time(exec_times["clear_table"][1]) + "s" + "\r    Time posting to DB: " + round_time(exec_times["post_entry_all"][1]) + "s"
 
 if config.CONFIG_MAIL_ENABLED:
     mail.sendmail("FetchFood Completed!", mail_content)
