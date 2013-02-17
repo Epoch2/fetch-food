@@ -79,6 +79,10 @@ entrycount = post.post_entries(entrylist)
 exec_times[4] = time.clock() - exec_times[4]
 exec_times[0] = time.clock() - exec_times[0]
 
+for i, time in enumerate(exec_times):
+    postdata = {exec_timekeys[i] : time}
+    post.post(config.POST_URL, config.POST_PAGE, config.POST_HEADERS, passwd.POST_PASSWD, config.ACTION_POST_INFO, postdata)
+
 mail_content = "fetchfood.py successfully ran at:\r\r" + datehelper.current_date() + "\r\rEntries posted: " + str(entrycount)
 exec_times_string_list = [mail_content]
 for i, t in enumerate(exec_times):
