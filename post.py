@@ -4,24 +4,24 @@ import mail
 import config
 import passwd
 
-def post(url, page, headers, passwd, action, data={}):
-    data["passwd"] = passwd
+def post(action, data={}):
+    data["passwd"] = passwd.POST_PASSWD
     data["action"] = action
     data_encoded = urllib.urlencode(data)
-    connection = httplib.HTTPConnection(url)
+    connection = httplib.HTTPConnection(config.POST_URL)
 
     try:
-        connection.request("POST", page, data_encoded, headers)
+        connection.request("POST", config.POST_PAGE, data_encoded, config.POST_HEADERS)
     except httplib.HTTPException as e:
         if config.CONFIG_MAIL_ENABLED:
-            mail.sendmail("FetchFood ERROR!", "Error requesting POST to " + url + page + " ->\rHTTPError")
+            mail.sendmail("FetchFood ERROR!", "Error requesting POST to " + config.POST_URL + config.POST_PAGE + " ->\rHTTPError")
         connection.close()
         sys.exit(1)
     response = connection.getresponse()
     response_data = response.read()
 
     if not (int(response_data[0]) == 0 and int(response_data[1]) == 0) and config.CONFIG_MAIL_ENABLED:
-        mail.sendmail("FetchFood ERROR!", "Error requesting POST to " + url + page + " ->\r" + str(response_data))
+        mail.sendmail("FetchFood ERROR!", "Error requesting POST to " + config.POST_URL + config.POST_PAGE + " ->\r" + str(response_data))
 
     return True
 
@@ -30,7 +30,7 @@ def post_entries(entrylist):
     for entry in entrylist:
         postdata = entry.get_data();
         try:
-            post(config.POST_URL, config.POST_PAGE, config.POST_HEADERS, passwd.POST_PASSWD, config.ACTION_POST_FOOD, postdata)
+            post(config.ACTION_POST_FOOD, postdata)
         except FoodEntryException as e:
             if config.CONFIG_MAIL_ENABLED:
                 mail.sendmail("FetchFood ERROR!", "Error generating entries ->\r" + str(e.exception))
