@@ -83,7 +83,7 @@ for i, time in enumerate(exec_times):
     postdata = {exec_timekeys[i] : time}
     post.post(config.ACTION_POST_INFO, postdata)
 
-mail_content = "fetchfood.py successfully ran at:\r\r" + datehelper.current_date() + "\r\rEntries posted: " + str(entrycount)
+mail_content = "fetchfood.py successfully ran at:\r\r" + datehelper.to_string(datehelper.current_date(), datehelper.PRECISION_DATE) + "\r" + datehelper.to_string(datehelper.current_date(), datehelper.PRECISION_TIME) + "\r\rEntries posted: " + str(entrycount)
 exec_times_string_list = [mail_content]
 for i, t in enumerate(exec_times):
     exec_times_string_list.append("\r\t" + exec_timekeys_description[i] + ": " + round_time(t))
