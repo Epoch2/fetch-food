@@ -2,21 +2,23 @@
 import re
 import datetime
 
-weekdays = [u"Måndag", u"Tisdag", u"Onsdag", u"Torsdag", u"Fredag"]
+PRECISION_DATE = "%Y-%m-%d" #2013-05-05
+PRECISION_TIME = "%H:%M:%S" #13:20:22
+WEEKDAYS = [u"Måndag", u"Tisdag", u"Onsdag", u"Torsdag", u"Fredag"]
 
 def weekday_to_weeknumber(string, currentday):
     day_of_week = -1
-    for day in weekdays:
+    for day in WEEKDAYS:
         day_of_week += 1
         if day in string:
             return day_of_week
     return currentday
 
-def to_string(date):
-    return date.strftime("%Y-%m-%d")
+def to_string(date, precision=PRECISION_DATE):
+    return date.strftime(precision)
 
 def current_date():
-    return datetime.datetime.now().strftime("%Y-%m-%d\n%H:%M:%S")
+    return datetime.datetime.now()
 
 def weekday_to_date(init_date, day_of_week):
     date = init_date + datetime.timedelta(days=day_of_week)
