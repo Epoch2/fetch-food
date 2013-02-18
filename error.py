@@ -41,4 +41,3 @@ class ErrorHandler:
         else:
             print mail_content
         sys.exit(1)
-        return
