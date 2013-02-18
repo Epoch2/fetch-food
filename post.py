@@ -29,12 +29,6 @@ def post_entries(entrylist):
     entrycount = 0
     for entry in entrylist:
         postdata = entry.get_data();
-        try:
-            post(config.ACTION_POST_FOOD, postdata)
-        except FoodEntryException as e:
-            if config.CONFIG_MAIL_ENABLED:
-                mail.sendmail("FetchFood ERROR!", "Error generating entries -> " + str(e.exception))
-            sys.exit(1)
-        else:
-            entrycount += 1
+        post(config.ACTION_POST_FOOD, postdata)
+        entrycount += 1
     return entrycount
