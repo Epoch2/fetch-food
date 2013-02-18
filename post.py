@@ -28,7 +28,10 @@ def post(action, data={}):
         sys.exit(1)
     response = connection.getresponse()
     response_data = response.read().replace("\n", "").strip()
-    response_code = int(response_data[0] + response_data[1])
+    try:
+        response_code = int(response_data[0] + response_data[1])
+    except ValueError:
+        raise PostException("PORTALN.SE", "Internal server error", config.POST_URL + config.POST_PAGE)
 
     if response_code != 0:
         raise PostException("FOODAPI", response_data, config.POST_URL + config.POST_PAGE)
