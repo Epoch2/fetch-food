@@ -72,14 +72,14 @@ exec_times[3] = time.clock()
 try:
     post.post(config.ACTION_CLEAR_TABLE) #Clear database table.
 except post.PostException as e:
-    errorhandler.add_error(e, True)
+    errorhandler.add_error(e, config.CONFIG_FATAL_CLEAR_TABLE)
 exec_times[3] = time.clock() - exec_times[3]
 exec_times[4] = time.clock()
 entrycount = 0
 try:
     entrycount = post.post_entries(entrylist)
 except post.PostException as e:
-    errorhandler.add_error(e, True)
+    errorhandler.add_error(e, config.CONFIG_FATAL_POST_ENTRY)
 
 exec_times[4] = time.clock() - exec_times[4]
 exec_times[0] = time.clock() - exec_times[0]
@@ -90,7 +90,7 @@ for i, time in enumerate(exec_times):
     try:
         post.post(config.ACTION_POST_INFO, postdata)
     except post.PostException as e:
-        errorhandler.add_error(e, False)
+        errorhandler.add_error(e, config.CONFIG_FATAL_POST_INFO)
 
 mail_content = "fetchfood.py completed at:" + config.CONFIG_MAIL_DELIMITER + config.CONFIG_MAIL_DELIMITER + datehelper.to_string(datehelper.current_date(), datehelper.PRECISION_DATE) + config.CONFIG_MAIL_DELIMITER + datehelper.to_string(datehelper.current_date(), datehelper.PRECISION_TIME) + config.CONFIG_MAIL_DELIMITER + config.CONFIG_MAIL_DELIMITER + "Entries posted: " + str(entrycount)
 exec_times_string_list = [mail_content]
