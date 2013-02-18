@@ -11,6 +11,9 @@ class PostException(Exception):
         self.exception = exception
         self.url = url
 
+    def __str__(self):
+        return self.type_ + ": " + self.exception + " -> " + self.url
+
 def post(action, data={}):
     data["passwd"] = passwd.POST_PASSWD
     data["action"] = action
@@ -29,13 +32,15 @@ def post(action, data={}):
 
     if response_code != 0:
         raise PostException("FOODAPI", response_data, config.POST_URL + config.POST_PAGE)
-
     return True
 
 def post_entries(entrylist):
     entrycount = 0
     for entry in entrylist:
         postdata = entry.get_data();
-        post(config.ACTION_POST_FOOD, postdata)
-        entrycount += 1
+        try:
+            post(config.ACTION_POST_FOOD, postdata)
+            entrycount += 1
+        except PostException:
+            raise
     return entrycount
