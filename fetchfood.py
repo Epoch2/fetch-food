@@ -72,30 +72,39 @@ exec_times[3] = time.clock()
 try:
     post.post(config.ACTION_CLEAR_TABLE) #Clear database table.
 except post.PostException as e:
-    errorhandler.add_error(e, True)
+    errorhandler.add_error(e, False)
 exec_times[3] = time.clock() - exec_times[3]
 exec_times[4] = time.clock()
+entrycount = 0
 try:
     entrycount = post.post_entries(entrylist)
 except post.PostException as e:
-    errorhandler.add_error(e, True)
+    errorhandler.add_error(e, False)
 
 exec_times[4] = time.clock() - exec_times[4]
 exec_times[0] = time.clock() - exec_times[0]
 
 for i, time in enumerate(exec_times):
-    postdata = {exec_timekeys[i] : time}
+    postdata = {config.POST_TYPE_TYPE : exec_timekeys[i],
+                config.POST_TYPE_TIME : time}
     try:
         post.post(config.ACTION_POST_INFO, postdata)
     except post.PostException as e:
         errorhandler.add_error(e, False)
 
-mail_content = "fetchfood.py completed at:\n\n" + datehelper.to_string(datehelper.current_date(), datehelper.PRECISION_DATE) + "\n" + datehelper.to_string(datehelper.current_date(), datehelper.PRECISION_TIME) + "\n\nEntries posted: " + str(entrycount)
+mail_content = "fetchfood.py completed at:" + config.CONFIG_MAIL_DELIMITER + config.CONFIG_MAIL_DELIMITER + datehelper.to_string(datehelper.current_date(), datehelper.PRECISION_DATE) + config.CONFIG_MAIL_DELIMITER + datehelper.to_string(datehelper.current_date(), datehelper.PRECISION_TIME) + config.CONFIG_MAIL_DELIMITER + config.CONFIG_MAIL_DELIMITER + "Entries posted: " + str(entrycount)
 exec_times_string_list = [mail_content]
 for i, t in enumerate(exec_times):
-    exec_times_string_list.append("\n    " + exec_timekeys_description[i] + ": " + round_time(t))
+    if i == 0:
+        indent = ""
+    else:
+        indent = "    "
+    exec_times_string_list.append(config.CONFIG_MAIL_DELIMITER + indent + exec_timekeys_description[i] + ": " + round_time(t) + "s")
 mail_content = "".join(exec_times_string_list)
+if errorhandler.has_error:
+    mail_content += config.CONFIG_MAIL_DELIMITER + config.CONFIG_MAIL_DELIMITER + "These (non-fatal) errors occurred during execution:" + config.CONFIG_MAIL_DELIMITER + errorhandler.get_errors_compiled()
 
 if config.CONFIG_MAIL_ENABLED:
     mail.sendmail("FetchFood Completed!", mail_content)
+print mail_content
 sys.exit(0)
