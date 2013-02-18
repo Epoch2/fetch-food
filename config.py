@@ -11,6 +11,9 @@ ACTION_POST_FOOD = "post_food"
 ACTION_POST_INFO = "post_info"
 ACTION_CLEAR_TABLE = "clear_table"
 
+POST_TYPE_TYPE = "type"
+POST_TYPE_TIME = "time"
+
 POST_URL = "www.portaln.se:80"
 POST_PAGE = "/skola/foodapi.php"
 POST_HEADERS = {"Content-Type": "application/x-www-form-urlencoded", "Accept": "text/plain"}
