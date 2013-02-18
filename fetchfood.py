@@ -51,11 +51,11 @@ try:
     page = urllib2.urlopen(config.TARGET_URL)
 except urllib2.URLError as e:
     if config.CONFIG_MAIL_ENABLED:
-        mail.sendmail("FetchFood ERROR!", "Error requesting GET to " + config.TARGET_URL + " ->\r" + str(e.reason))
+        mail.sendmail("FetchFood ERROR!", "Error requesting GET to " + config.TARGET_URL + " -> " + str(e.reason))
     sys.exit(1)
 except urllib2.HTTPError as e:
     if config.CONFIG_MAIL_ENABLED:
-        mail.sendmail("FetchFood ERROR!", "Error requesting GET to " + config.TARGET_URL + " ->\r" + str(e.code) + ", " + str(e.reason))
+        mail.sendmail("FetchFood ERROR!", "Error requesting GET to " + config.TARGET_URL + " -> " + str(e.code) + ", " + str(e.reason))
     sys.exit(1)
 
 exec_times[1] = time.clock() - exec_times[1]
