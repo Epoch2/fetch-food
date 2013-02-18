@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 TARGET_URL = "http://www.amica.se/nackagymnasium"
-CONTENT_OUTER_ID = "ctl00_RegionPageBody_RegionPage_RegionContent_RegionMainContent_RegionMainContentMiddle_MainContentMenu_ctl00_MenuUpdatePanel"
-CONTENT_INNER_CLASS = "ContentArea"
-DATE_INNER_ID = "ctl00_RegionPageBody_RegionPage_RegionContent_RegionMainContent_RegionMainContentMiddle_MainContentMenu_ctl00_HeadingMenu"
+TARGET_CONTENT_OUTER_IDENTIFIER = "div#ctl00_RegionPageBody_RegionPage_RegionContent_RegionMainContent_RegionMainContentMiddle_MainContentMenu_ctl00_MenuUpdatePanel"
+TARGET_CONTENT_INNER_IDENTIFIER = "div[class-=ContentArea]"
+TARGET_DATE_IDENTIFIER = "h2#ctl00_RegionPageBody_RegionPage_RegionContent_RegionMainContent_RegionMainContentMiddle_MainContentMenu_ctl00_HeadingMenu"
 
 FOOD_DEFAULT_TYPE = u"Extrarätt"
 FOOD_UNKNOWN_TYPE = "UNKNOWN_TYPE"

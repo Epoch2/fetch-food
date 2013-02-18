@@ -59,12 +59,10 @@ exec_times[1] = time.clock() - exec_times[1]
 
 page_soup = BeautifulSoup(page)
 page.close()
-date_soup = page_soup.select("h2#" + config.DATE_INNER_ID)
+date_soup = page_soup.select(config.TARGET_DATE_IDENTIFIER)
 date_plaintext = date_soup[0].contents[0].strip()
 date = datehelper.find_date(date_plaintext)
-content_soup = page_soup.select("div#" + config.CONTENT_OUTER_ID +
-                                " div[class-=" + config.CONTENT_INNER_CLASS +
-                                "] p")
+content_soup = page_soup.select(config.TARGET_CONTENT_OUTER_IDENTIFIER + " " + config.TARGET_CONTENT_INNER_IDENTIFIER + " p")
 exec_times[2] = time.clock()
 entrylist = generate_food_entries(date, content_soup)
 exec_times[2] = time.clock() - exec_times[2]
