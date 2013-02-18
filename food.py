@@ -27,11 +27,6 @@ class FoodEntry:
                 "content" : self.content.encode("utf-8"),
                 "info" : self.info.encode("utf-8")}
 
-class FoodEntryException(Exception):
-
-    def __init__(self, exception):
-        self.exception = exception
-
 class FoodEntryGenerator:
 
     REGEX_TYPE = r".+?(?=\s*[A-ZÅÄÖ])"      #matches Lunch, Soppa, etc
