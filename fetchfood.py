@@ -72,14 +72,14 @@ exec_times[3] = time.clock()
 try:
     post.post(config.ACTION_CLEAR_TABLE) #Clear database table.
 except post.PostException as e:
-    errorhandler.add_error(e, False)
+    errorhandler.add_error(e, True)
 exec_times[3] = time.clock() - exec_times[3]
 exec_times[4] = time.clock()
 entrycount = 0
 try:
     entrycount = post.post_entries(entrylist)
 except post.PostException as e:
-    errorhandler.add_error(e, False)
+    errorhandler.add_error(e, True)
 
 exec_times[4] = time.clock() - exec_times[4]
 exec_times[0] = time.clock() - exec_times[0]
