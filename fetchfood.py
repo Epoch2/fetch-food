@@ -104,5 +104,4 @@ if errorhandler.has_error:
 
 if config.CONFIG_MAIL_ENABLED:
     mail.sendmail("FetchFood Completed!", mail_content)
-print mail_content
 sys.exit(0)
