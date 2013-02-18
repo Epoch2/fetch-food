@@ -4,6 +4,13 @@ import mail
 import config
 import passwd
 
+class PostException(Exception):
+
+    def __init__(self, type_, exception, url):
+        self.type_ = type_
+        self.exception = exception
+        self.url = url
+
 def post(action, data={}):
     data["passwd"] = passwd.POST_PASSWD
     data["action"] = action
@@ -13,15 +20,15 @@ def post(action, data={}):
     try:
         connection.request("POST", config.POST_PAGE, data_encoded, config.POST_HEADERS)
     except httplib.HTTPException as e:
-        if config.CONFIG_MAIL_ENABLED:
-            mail.sendmail("FetchFood ERROR!", "Error requesting POST to " + config.POST_URL + config.POST_PAGE + " -> HTTPError")
+        raise PostException("HTTP", e, config.POST_URL + config.POST_PAGE)
         connection.close()
         sys.exit(1)
     response = connection.getresponse()
-    response_data = response.read()
+    response_data = response.read().replace("\n", "").strip()
+    response_code = int(response_data[0] + response_data[1])
 
-    if not (int(response_data[0]) == 0 and int(response_data[1]) == 0) and config.CONFIG_MAIL_ENABLED:
-        mail.sendmail("FetchFood ERROR!", "Error requesting POST to " + config.POST_URL + config.POST_PAGE + " -> " + str(response_data))
+    if response_code != 0:
+        raise PostException("FOODAPI", response_data, config.POST_URL + config.POST_PAGE)
 
     return True
 
