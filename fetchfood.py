@@ -12,6 +12,7 @@ import datehelper
 import food
 import post
 import mail
+import error
 import config
 import passwd
 from bs4 import BeautifulSoup
@@ -46,18 +47,14 @@ exec_timekeys_description = ["Total execution time", "Time getting menu", "Time 
 exec_times = [0]*5
 exec_times[0] = time.clock()
 exec_times[1] = time.clock()
+errorhandler = error.ErrorHandler()
 
 try:
     page = urllib2.urlopen(config.TARGET_URL)
-except urllib2.URLError as e:
-    if config.CONFIG_MAIL_ENABLED:
-        mail.sendmail("FetchFood ERROR!", "Error requesting GET to " + config.TARGET_URL + " -> " + str(e.reason))
-    sys.exit(1)
 except urllib2.HTTPError as e:
-    if config.CONFIG_MAIL_ENABLED:
-        mail.sendmail("FetchFood ERROR!", "Error requesting GET to " + config.TARGET_URL + " -> " + str(e.code) + ", " + str(e.reason))
-    sys.exit(1)
-
+    errorhandler.add_error(e, True)
+except urllib2.URLError as e:
+    errorhandler.add_error(e, True)
 exec_times[1] = time.clock() - exec_times[1]
 
 page_soup = BeautifulSoup(page)
@@ -72,21 +69,31 @@ exec_times[2] = time.clock()
 entrylist = generate_food_entries(date, content_soup)
 exec_times[2] = time.clock() - exec_times[2]
 exec_times[3] = time.clock()
-post.post(config.ACTION_CLEAR_TABLE) #Clear database table.
+try:
+    post.post(config.ACTION_CLEAR_TABLE) #Clear database table.
+except post.PostException as e:
+    errorhandler.add_error(e, True)
 exec_times[3] = time.clock() - exec_times[3]
 exec_times[4] = time.clock()
-entrycount = post.post_entries(entrylist)
+try:
+    entrycount = post.post_entries(entrylist)
+except post.PostException as e:
+    errorhandler.add_error(e, True)
+
 exec_times[4] = time.clock() - exec_times[4]
 exec_times[0] = time.clock() - exec_times[0]
 
 for i, time in enumerate(exec_times):
     postdata = {exec_timekeys[i] : time}
-    post.post(config.ACTION_POST_INFO, postdata)
+    try:
+        post.post(config.ACTION_POST_INFO, postdata)
+    except post.PostException as e:
+        errorhandler.add_error(e, False)
 
-mail_content = "fetchfood.py successfully ran at:\r\r" + datehelper.to_string(datehelper.current_date(), datehelper.PRECISION_DATE) + "\r" + datehelper.to_string(datehelper.current_date(), datehelper.PRECISION_TIME) + "\r\rEntries posted: " + str(entrycount)
+mail_content = "fetchfood.py completed at:\n\n" + datehelper.to_string(datehelper.current_date(), datehelper.PRECISION_DATE) + "\n" + datehelper.to_string(datehelper.current_date(), datehelper.PRECISION_TIME) + "\n\nEntries posted: " + str(entrycount)
 exec_times_string_list = [mail_content]
 for i, t in enumerate(exec_times):
-    exec_times_string_list.append("\r\t" + exec_timekeys_description[i] + ": " + round_time(t))
+    exec_times_string_list.append("\n    " + exec_timekeys_description[i] + ": " + round_time(t))
 mail_content = "".join(exec_times_string_list)
 
 if config.CONFIG_MAIL_ENABLED:
