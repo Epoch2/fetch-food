@@ -18,6 +18,7 @@ fetch-food is a back end web scraper with the purpose to provide current menu da
 * post.py - functions for POSTing data to server
 * datehelper.py - helper functions for parsing and converting dates
 * mail.py - functions for sending status/error e-mails
+* error.py - error handling
 * config.py - config file
 * passwd.py - (not on github) contains passwords for POSTing data and sending e-mails
 
