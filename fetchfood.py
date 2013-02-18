@@ -90,7 +90,7 @@ for i, time in enumerate(exec_times):
     except post.PostException as e:
         errorhandler.add_error(e, config.ERROR_POST_INFO_FATAL)
 
-mail_content = "fetchfood.py completed at:" + config.CONFIG_MAIL_DELIMITER + config.CONFIG_MAIL_DELIMITER + datehelper.to_string(datehelper.current_date(), datehelper.PRECISION_DATE) + config.CONFIG_MAIL_DELIMITER + datehelper.to_string(datehelper.current_date(), datehelper.PRECISION_TIME) + config.CONFIG_MAIL_DELIMITER + config.CONFIG_MAIL_DELIMITER + "Entries posted: " + str(entrycount)
+mail_content = ("fetchfood.py completed at:" + config.CONFIG_MAIL_DELIMITER + config.CONFIG_MAIL_DELIMITER + datehelper.to_string(datehelper.current_date(), datehelper.PRECISION_DATE) + config.CONFIG_MAIL_DELIMITER + datehelper.to_string(datehelper.current_date(), datehelper.PRECISION_TIME) + config.CONFIG_MAIL_DELIMITER + config.CONFIG_MAIL_DELIMITER + "Entries posted: " + str(entrycount))
 exec_times_string_list = [mail_content]
 for i, t in enumerate(exec_times):
     if i == 0:
