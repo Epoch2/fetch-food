@@ -90,17 +90,18 @@ for i, time in enumerate(exec_times):
     except post.PostException as e:
         errorhandler.add_error(e, config.ERROR_POST_INFO_FATAL)
 
-mail_content = ("fetchfood.py completed at:" + config.CONFIG_MAIL_DELIMITER + config.CONFIG_MAIL_DELIMITER + datehelper.to_string(datehelper.current_date(), datehelper.PRECISION_DATE) + config.CONFIG_MAIL_DELIMITER + datehelper.to_string(datehelper.current_date(), datehelper.PRECISION_TIME) + config.CONFIG_MAIL_DELIMITER + config.CONFIG_MAIL_DELIMITER + "Entries posted: " + str(entrycount))
+nl = config.CONFIG_MAIL_NEWLINE
+mail_content = ("fetchfood.py completed at:" + nl + nl + datehelper.to_string(datehelper.current_date(), datehelper.PRECISION_DATE) + nl + datehelper.to_string(datehelper.current_date(), datehelper.PRECISION_TIME) + nl + nl + "Entries posted: " + str(entrycount))
 exec_times_string_list = [mail_content]
 for i, t in enumerate(exec_times):
     if i == 0:
         indent = ""
     else:
         indent = "    "
-    exec_times_string_list.append(config.CONFIG_MAIL_DELIMITER + indent + exec_timekeys_description[i] + ": " + round_time(t) + "s")
+    exec_times_string_list.append(nl + indent + exec_timekeys_description[i] + ": " + round_time(t) + "s")
 mail_content = "".join(exec_times_string_list)
-if errorhandler.has_error:
-    mail_content += config.CONFIG_MAIL_DELIMITER + config.CONFIG_MAIL_DELIMITER + "These (non-fatal) errors occurred during execution:" + config.CONFIG_MAIL_DELIMITER + errorhandler.get_errors_compiled()
+if errorhannler.has_error:
+    mail_content += nl + nl + "These (non-fatal) errors occurred during execution:" + nl + errorhannler.get_errors_compiled()
 
 if config.CONFIG_MAIL_ENABLED:
     mail.sendmail("FetchFood Completed!", mail_content)
