@@ -32,7 +32,7 @@ class ErrorHandler:
         nl = config.CONFIG_MAIL_NEWLINE
         if config.CONFIG_MAIL_ENABLED:
             mail_subject = "FetchFood FAILED!"
-            mail_content = ("A fatal error occurred at:" + nl + nl
+            mail_content = ("A fatal error occurred at:" + nl + nl +
                             datehelper.to_string(datehelper.current_date(), datehelper.PRECISION_DATE) + nl +
                             datehelper.to_string(datehelper.current_date(), datehelper.PRECISION_TIME) + nl + nl +
                             "FATAL ERROR: " + self.compile_error(error) + nl + nl +
