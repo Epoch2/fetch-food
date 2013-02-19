@@ -100,8 +100,8 @@ for i, t in enumerate(exec_times):
         indent = "    "
     exec_times_string_list.append(nl + indent + exec_timekeys_description[i] + ": " + round_time(t) + "s")
 mail_content = "".join(exec_times_string_list)
-if errorhannler.has_error:
-    mail_content += nl + nl + "These (non-fatal) errors occurred during execution:" + nl + errorhannler.get_errors_compiled()
+if errorhandler.has_error:
+    mail_content += nl + nl + "These (non-fatal) errors occurred during execution:" + nl + errorhandler.get_errors_compiled()
 
 if config.CONFIG_MAIL_ENABLED:
     mail.sendmail("FetchFood Completed!", mail_content)
