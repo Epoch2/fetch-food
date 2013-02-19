@@ -22,10 +22,10 @@ class FoodEntry:
             return False
 
     def get_data(self):
-        return {"date" : self.date.encode("utf-8"),
-                "type" : self.type_.encode("utf-8"),
-                "content" : self.content.encode("utf-8"),
-                "info" : self.info.encode("utf-8")}
+        return {"food_date" : self.date.encode("utf-8"),
+                "food_type" : self.type_.encode("utf-8"),
+                "food_content" : self.content.encode("utf-8"),
+                "food_info" : self.info.encode("utf-8")}
 
 class FoodEntryGenerator:
 
