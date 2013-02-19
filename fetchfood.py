@@ -45,8 +45,8 @@ def round_time(time):
 exec_timekeys = ["total", "target_request", "generate_entries", "clear_table", "post_entry_all"]
 exec_timekeys_description = ["Total execution time", "Time getting menu", "Time generating entries", "Time clearing DB", "Time posting to DB"]
 exec_times = [0]*5
-exec_times[0] = time.clock()
-exec_times[1] = time.clock()
+exec_times[0] = time.time()
+exec_times[1] = time.time()
 errorhandler = error.ErrorHandler()
 
 try:
@@ -55,7 +55,7 @@ except urllib2.HTTPError as e:
     errorhandler.add_error(e, True)
 except urllib2.URLError as e:
     errorhandler.add_error(e, True)
-exec_times[1] = time.clock() - exec_times[1]
+exec_times[1] = time.time() - exec_times[1]
 
 page_soup = BeautifulSoup(page)
 page.close()
@@ -63,24 +63,24 @@ date_soup = page_soup.select(config.TARGET_DATE_IDENTIFIER)
 date_plaintext = date_soup[0].contents[0].strip()
 date = datehelper.find_date(date_plaintext)
 content_soup = page_soup.select(config.TARGET_CONTENT_OUTER_IDENTIFIER + " " + config.TARGET_CONTENT_INNER_IDENTIFIER + " p")
-exec_times[2] = time.clock()
+exec_times[2] = time.time()
 entrylist = generate_food_entries(date, content_soup)
-exec_times[2] = time.clock() - exec_times[2]
-exec_times[3] = time.clock()
+exec_times[2] = time.time() - exec_times[2]
+exec_times[3] = time.time()
 try:
     post.post(config.ACTION_CLEAR_TABLE) #Clear database table.
 except post.PostException as e:
     errorhandler.add_error(e, config.ERROR_CLEAR_TABLE_FATAL)
-exec_times[3] = time.clock() - exec_times[3]
-exec_times[4] = time.clock()
+exec_times[3] = time.time() - exec_times[3]
+exec_times[4] = time.time()
 entrycount = 0
 try:
     entrycount = post.post_entries(entrylist)
 except post.PostException as e:
     errorhandler.add_error(e, config.ERROR_POST_ENTRY_FATAL)
 
-exec_times[4] = time.clock() - exec_times[4]
-exec_times[0] = time.clock() - exec_times[0]
+exec_times[4] = time.time() - exec_times[4]
+exec_times[0] = time.time() - exec_times[0]
 
 for i, time in enumerate(exec_times):
     postdata = {config.POST_TYPE_TYPE : exec_timekeys[i],
