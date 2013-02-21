@@ -8,5 +8,4 @@ def get_selectable_dates(page):
 
     for optiontag in date_soup:
         datelist.append(optiontag["value"])
-
     return datelist
