@@ -14,7 +14,7 @@ class HTTPException(Exception):
         self.url = url
 
     def __str__(self):
-        return self.type_ + ": " + self.exception + " -> " + self.url
+        return self.type_ + ": " + str(self.exception) + " -> " + self.url
 
 def get_page_from_url(url):
     try:
@@ -43,8 +43,8 @@ def post_data(url, page, headers, data):
 
 def post_portaln(action, data={}):
     data["action"] = action
-    data["passwd"] = passwd.POST_PASSWD
-    response = post_data(config.POST_URL, config.POST_SUBURL, config.POST_DEFAULT_HEADERS, data)
+    data["passwd"] = passwd.PORTALN_POST_PASSWD
+    response = post_data(config.PORTALN_POST_URL, config.PORTALN_POST_SUBURL, config.POST_DEFAULT_HEADERS, data)
     response = response.replace("\n", "").strip()
 
     try:
