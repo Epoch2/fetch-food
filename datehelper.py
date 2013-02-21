@@ -25,10 +25,9 @@ def weekday_to_date(init_date, day_of_week):
     return date
 
 def to_date(string):
-    REGEX_DATE = r"^\d{4}[\.-_]\d{2}[\.-_]\d{1,2}"  #matches YYYY.MM.DD, YYYY-MM-DD, YYYY_MM_DD
-    REGEX_SEPARATORS = r"[\.-_]+"
-    date_split = re.findall(REGEX_SEPARATORS, re.match(REGEX_DATE, string))
-    #date_split = re.match(REGEX_DATE, string).group().split(".")
+    REGEX_DATE = r"^\d{4}[\._-]\d{2}[\._-]\d{1,2}"  #matches YYYY.MM.DD, YYYY-MM-DD, YYYY_MM_DD
+    REGEX_SEPARATORS = r"[\._-]+"
+    date_split = re.split(REGEX_SEPARATORS, re.match(REGEX_DATE, string).group())
     date = datetime.date(int(date_split[0]), int(date_split[1]), int(date_split[2]))
     return date
 

@@ -66,7 +66,7 @@ errorhandler = error.ErrorHandler()
 entrylist = generate_food_entries(config.TARGET_URL, config.TARGET_SUBURL)
 
 try:
-    post.post_portaln(config.ACTION_CLEAR_TABLE) #Clear database table.
+    http.post_portaln(config.ACTION_CLEAR_TABLE) #Clear database table.
 except http.HTTPException as e:
     errorhandler.add_error(e, config.ERROR_CLEAR_TABLE_FATAL)
 entrycount = 0

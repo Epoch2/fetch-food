@@ -44,7 +44,7 @@ def post_data(url, page, headers, data):
 def post_portaln(action, data={}):
     data["action"] = action
     data["passwd"] = passwd.POST_PASSWD
-    response = post_data(config.POST_URL, config.POST_SUBURL, config.POST_HEADERS, data)
+    response = post_data(config.POST_URL, config.POST_SUBURL, config.POST_DEFAULT_HEADERS, data)
     response = response.replace("\n", "").strip()
 
     try:

@@ -1,3 +1,4 @@
+import config
 from bs4 import BeautifulSoup
 
 def get_selectable_dates(page):
