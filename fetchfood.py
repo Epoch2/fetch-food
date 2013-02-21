@@ -21,26 +21,30 @@ from bs4 import BeautifulSoup
 def generate_food_entries(url, suburl):
     entrylist = []
     page_cache = ""
-    for date in parse.get_selectable_dates(http.get_page_from_url(url + suburl)):
+    init_page = http.get_page_from_url(url + suburl)
+    parser = parse.PropertyParser(init_page)
+    for date in parser.get_selectable_dates():
         headers = config.POST_DEFAULT_HEADERS
         data = {config.AMICA_TYPE_KEY : "Lunch",
                 config.AMICA_WEEK_KEY : date,
-                config.AMICA_KEY_1 : config.AMICA_VAL_1,
-                config.AMICA_KEY_2 : config.AMICA_VAL_2}
-        page = http.post_data(url, suburl, headers, data)
+                "__VIEWSTATE" : parser.get_viewstate()}
+        print parser.get_viewstate()
+        #data.update(config.AMICA_POST_DATA)
+        try:
+            page = http.post_data(url, suburl, headers, data)
+        except http.HTTPException as e:
+            raise
+        parser.reinit(page)
         if page in page_cache:
             print "same shit"
         else:
             print "different shit"
             page_cache = page
-        page_soup = BeautifulSoup(page)
-        content_soup = page_soup.select(config.TARGET_CONTENT_IDENTIFIER)
 
         food_generator = food.FoodEntryGenerator(datehelper.to_date(date))
         entrylist_special = []
 
-        for p_tag in content_soup:
-            plaintext = p_tag.contents[0].strip() #html -> plaintext
+        for entry in parser.get_entry_list():
             entry = food_generator.generate_entry(plaintext)
 
             if entry is not None:
@@ -59,7 +63,7 @@ def post_entries(entrylist):
     for entry in entrylist:
         postdata = entry.get_data();
         try:
-            post.post_portaln(config.ACTION_POST_FOOD, postdata)
+            post.post_portaln(config.PORTALN_ACTION["post_food"], postdata)
             entrycount += 1
         except http.HTTPException:
             raise
@@ -70,25 +74,32 @@ def round_time(time):
 
 #####
 
-errorhandler = error.ErrorHandler()
-entrylist = generate_food_entries(config.TARGET_URL, config.TARGET_SUBURL)
+def main():
+    errorhandler = error.ErrorHandler()
+    try:
+        entrylist = generate_food_entries(config.TARGET_URL, config.TARGET_SUBURL)
+    except http.HTTPException as e:
+        print str(e)
 
-try:
-    http.post_portaln(config.ACTION_CLEAR_TABLE) #Clear database table.
-except http.HTTPException as e:
-    errorhandler.add_error(e, config.ERROR_CLEAR_TABLE_FATAL)
-entrycount = 0
-try:
-    entrycount = post_entries(entrylist)
-except http.HTTPException as e:
-    errorhandler.add_error(e, config.ERROR_POST_ENTRY_FATAL)
+    try:
+        http.post_portaln(config.PORTALN_ACTION["clear_table"]) #Clear database table.
+    except http.HTTPException as e:
+        errorhandler.add_error(e, config.ERROR_FATAL["clear_table"])
+    entrycount = 0
+    try:
+        entrycount = post_entries(entrylist)
+    except http.HTTPException as e:
+        errorhandler.add_error(e, config.ERROR_FATAL["post_entry"])
 
-nl = config.CONFIG_MAIL_NEWLINE
-mail_content = ("fetchfood.py completed at:" + nl + nl + datehelper.to_string(datehelper.current_date(), datehelper.PRECISION_DATE) + nl + datehelper.to_string(datehelper.current_date(), datehelper.PRECISION_TIME) + nl + nl + "Entries posted: " + str(entrycount))
+    nl = config.CONFIG["mail_newline"]
+    mail_content = ("fetchfood.py completed at:" + nl + nl + datehelper.to_string(datehelper.current_date(), datehelper.PRECISION_DATE) + nl + datehelper.to_string(datehelper.current_date(), datehelper.PRECISION_TIME) + nl + nl + "Entries posted: " + str(entrycount))
 
-if errorhandler.has_error:
-    mail_content += nl + nl + "These (non-fatal) errors occurred during execution:" + nl + errorhandler.get_errors_compiled()
+    if errorhandler.has_error:
+        mail_content += nl + nl + "These (non-fatal) errors occurred during execution:" + nl + errorhandler.get_errors_compiled()
 
-if config.CONFIG_MAIL_ENABLED:
-    mail.sendmail("FetchFood Completed!", mail_content)
-sys.exit(0)
+    if config.CONFIG["mail_enabled"]:
+        mail.sendmail("FetchFood Completed!", mail_content)
+    sys.exit(0)
+
+if __name__ == "__main__":
+    main()
