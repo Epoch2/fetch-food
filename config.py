@@ -8,32 +8,31 @@ TARGET_SELECTABLE_DATE_IDENTIFIER = "div#ctl00_RegionPageBody_RegionPage_RegionC
 FOOD_DEFAULT_TYPE = u"Extrarätt"
 FOOD_UNKNOWN_TYPE = "UNKNOWN_TYPE"
 
-ACTION_POST_FOOD = "post_food"
-ACTION_POST_INFO = "post_info"
-ACTION_CLEAR_TABLE = "clear_table"
+POST_DEFAULT_HEADERS = {"Content-Type": "application/x-www-form-urlencoded", "Accept": "text/plain"}
 
-ERROR_CLEAR_TABLE_FATAL = True
-ERROR_POST_ENTRY_FATAL = True
-ERROR_POST_INFO_FATAL = False
+PORTALN_POST_URL = "www.portaln.se:80"
+PORTALN_POST_SUBURL = "/skola/foodapi.php"
 
-POST_TYPE_TYPE = "type"
-POST_TYPE_TIME = "time"
+PORTALN_ACTION = {"post_food" : "post_food",
+                  "post_info" : "post_info",
+                  "clear_table" : "clear_table"}
+
+ERROR_FATAL = {"clear_table" : True,
+               "post_entry" : True,
+               "post_info" : False}
 
 AMICA_TYPE_KEY = "ctl00$RegionPageBody$RegionPage$RegionContent$RegionMainContent$RegionMainContentMiddle$MainContentMenu$ctl00$DropDownListMenu"
 AMICA_WEEK_KEY = "ctl00$RegionPageBody$RegionPage$RegionContent$RegionMainContent$RegionMainContentMiddle$MainContentMenu$ctl00$DropDownListMenuWeek"
-AMICA_KEY_1 = "ctl00$RegionPageBody$DefaultScriptManager"
-AMICA_VAL_1 = "ctl00$RegionPageBody$DefaultScriptManager|ctl00$RegionPageBody$RegionPage$RegionContent$RegionMainContent$RegionMainContentMiddle$MainContentMenu$ctl00$DropDownListMenuWeek"
-AMICA_KEY_2 = "ctl00$RegionPageBody$RegionHeader$ctl00$ctl01$SearchText"
-AMICA_VAL_2 = ""
+AMICA_POST_DATA = {"ctl00$RegionPageBody$DefaultScriptManager" : "ctl00$RegionPageBody$DefaultScriptManager|ctl00$RegionPageBody$RegionPage$RegionContent$RegionMainContent$RegionMainContentMiddle$MainContentMenu$ctl00$DropDownListMenuWeek",
+                   "ctl00$RegionPageBody$RegionHeader$ctl00$ctl01$SearchText" : "",
+                   "__ASYNCPOST" : "false",
+                   "__EVENTTARGET" : "ctl00$RegionPageBody$RegionPage$RegionContent$RegionMainContent$RegionMainContentMiddle$MainContentMenu$ctl00$DropDownListMenuWeek",
+                   "__LASTFOCUS" : ""}
 
-POST_URL = "www.portaln.se:80"
-POST_SUBURL = "/skola/foodapi.php"
-POST_DEFAULT_HEADERS = {"Content-Type": "application/x-www-form-urlencoded", "Accept": "text/plain"}
+EMAIL_INFO = {"server" : "send.one.com:2525",
+              "user" : "server@jvester.se",
+              "from" : "server@jvester.se",
+              "to" : "jv@jvester.se"}
 
-EMAIL_SERVER = "send.one.com:2525"
-EMAIL_USER = "server@jvester.se"
-EMAIL_FROM = "server@jvester.se"
-EMAIL_TO = "jv@jvester.se"
-
-CONFIG_MAIL_ENABLED = False
-CONFIG_MAIL_NEWLINE = "\r"
+CONFIG = {"mail_enabled" : False,
+          "mail_newline" : "\r"}
