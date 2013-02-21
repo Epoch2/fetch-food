@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
 TARGET_URL = "http://www.amica.se:80"
 TARGET_SUBURL = "/nackagymnasium"
-TARGET_CONTENT_IDENTIFIER = "div#ctl00_RegionPageBody_RegionPage_RegionContent_RegionMainContent_RegionMainContentMiddle_MainContentMenu_ctl00_MenuUpdatePanel div[class-=ContentArea] p"
-TARGET_CURRENT_DATE_IDENTIFIER = "h2#ctl00_RegionPageBody_RegionPage_RegionContent_RegionMainContent_RegionMainContentMiddle_MainContentMenu_ctl00_HeadingMenu"
-TARGET_SELECTABLE_DATE_IDENTIFIER = "div#ctl00_RegionPageBody_RegionPage_RegionContent_RegionMainContent_RegionMainContentMiddle_MainContentMenu_ctl00_ctl01 select[name=ctl00$RegionPageBody$RegionPage$RegionContent$RegionMainContent$RegionMainContentMiddle$MainContentMenu$ctl00$DropDownListMenuWeek] option"
 
 FOOD_DEFAULT_TYPE = u"Extrarätt"
 FOOD_UNKNOWN_TYPE = "UNKNOWN_TYPE"
