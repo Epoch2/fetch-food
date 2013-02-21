@@ -21,6 +21,10 @@ POST_TYPE_TIME = "time"
 
 AMICA_TYPE_KEY = "ctl00$RegionPageBody$RegionPage$RegionContent$RegionMainContent$RegionMainContentMiddle$MainContentMenu$ctl00$DropDownListMenu"
 AMICA_WEEK_KEY = "ctl00$RegionPageBody$RegionPage$RegionContent$RegionMainContent$RegionMainContentMiddle$MainContentMenu$ctl00$DropDownListMenuWeek"
+AMICA_KEY_1 = "ctl00$RegionPageBody$DefaultScriptManager"
+AMICA_VAL_1 = "ctl00$RegionPageBody$DefaultScriptManager|ctl00$RegionPageBody$RegionPage$RegionContent$RegionMainContent$RegionMainContentMiddle$MainContentMenu$ctl00$DropDownListMenuWeek"
+AMICA_KEY_2 = "ctl00$RegionPageBody$RegionHeader$ctl00$ctl01$SearchText"
+AMICA_VAL_2 = ""
 
 POST_URL = "www.portaln.se:80"
 POST_SUBURL = "/skola/foodapi.php"
