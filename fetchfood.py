@@ -20,11 +20,19 @@ from bs4 import BeautifulSoup
 
 def generate_food_entries(url, suburl):
     entrylist = []
+    page_cache = ""
     for date in parse.get_selectable_dates(http.get_page_from_url(url + suburl)):
         headers = config.POST_DEFAULT_HEADERS
         data = {config.AMICA_TYPE_KEY : "Lunch",
-                config.AMICA_WEEK_KEY : date}
+                config.AMICA_WEEK_KEY : date,
+                config.AMICA_KEY_1 : config.AMICA_VAL_1,
+                config.AMICA_KEY_2 : config.AMICA_VAL_2}
         page = http.post_data(url, suburl, headers, data)
+        if page in page_cache:
+            print "same shit"
+        else:
+            print "different shit"
+            page_cache = page
         page_soup = BeautifulSoup(page)
         content_soup = page_soup.select(config.TARGET_CONTENT_IDENTIFIER)
 
