@@ -4,13 +4,14 @@ from bs4 import BeautifulSoup
 class PropertyParser(object):
 
     selectable_date_identifier = "div#ctl00_RegionPageBody_RegionPage_RegionContent_RegionMainContent_RegionMainContentMiddle_MainContentMenu_ctl00_ctl01 select[name=ctl00$RegionPageBody$RegionPage$RegionContent$RegionMainContent$RegionMainContentMiddle$MainContentMenu$ctl00$DropDownListMenuWeek] option"
-    content_identifier = "div#ctl00_RegionPageBody_RegionPage_RegionContent_RegionMainContent_RegionMainContentMiddle_MainContentMenu_ctl00_MenuUpdatePanel div[class-=ContentArea] p"
-    viewstate_identifier = "input[name=__VIEWSTATE]"
+    content_identifier = "div#ctl00_RegionPageBody_RegionPage_RegionContent_RegionMainContent_RegionMainContentMiddle_MainContentMenu_ctl00_MenuUpdatePanel div[class=ContentArea] p"
+    property_identifier = "input"
 
     def __init__(self, page):
         self.page_soup = BeautifulSoup(page)
 
-    def reinit(page):
+    def reinit(self, page):
+        print "REINIT"
         self.page_soup = BeautifulSoup(page)
 
     def get_selectable_dates(self):
@@ -29,7 +30,12 @@ class PropertyParser(object):
             entrylist.append(entry.contents[0].strip())
         return entrylist
 
-    def get_viewstate(self):
-        viewstatetag = self.page_soup.select(PropertyParser.viewstate_identifier)
-        return viewstatetag[0]["value"]
+    def get_properties(self):
+        property_soup = self.page_soup.select(PropertyParser.property_identifier)
+        properties =  {}
 
+        for propertytag in property_soup:
+            print propertytag
+            if propertytag["name"][0] == "_" and propertytag["name"][1] == "_":
+                properties[propertytag["name"]] = propertytag["value"]
+        return properties

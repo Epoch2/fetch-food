@@ -4,9 +4,8 @@
 # FetchFood
 # Fetch menu data from page, structurize it and POST it to webserver.
 
-import urllib2
+import urllib
 import re
-import time
 import sys
 import http
 import parse
@@ -15,7 +14,6 @@ import food
 import mail
 import error
 import config
-import passwd
 from bs4 import BeautifulSoup
 
 def generate_food_entries(url, suburl):
@@ -26,13 +24,12 @@ def generate_food_entries(url, suburl):
     for date in parser.get_selectable_dates():
         headers = config.POST_DEFAULT_HEADERS
         data = {config.AMICA_TYPE_KEY : "Lunch",
-                config.AMICA_WEEK_KEY : date,
-                "__VIEWSTATE" : parser.get_viewstate()}
-        print parser.get_viewstate()
-        #data.update(config.AMICA_POST_DATA)
+                config.AMICA_WEEK_KEY : date}
+        data.update(parser.get_properties())
+        data.update(config.AMICA_POST_DATA)
         try:
             page = http.post_data(url, suburl, headers, data)
-        except http.HTTPException as e:
+        except http.HTTPException:
             raise
         parser.reinit(page)
         if page in page_cache:
@@ -65,7 +62,7 @@ def post_entries(entrylist):
         try:
             post.post_portaln(config.PORTALN_ACTION["post_food"], postdata)
             entrycount += 1
-        except http.HTTPException:
+        except http.HTTPException as e:
             raise
     return entrycount
 
@@ -79,7 +76,7 @@ def main():
     try:
         entrylist = generate_food_entries(config.TARGET_URL, config.TARGET_SUBURL)
     except http.HTTPException as e:
-        print str(e)
+        errorhandler.add_error(e, config.ERROR_FATAL["postback"])
 
     try:
         http.post_portaln(config.PORTALN_ACTION["clear_table"]) #Clear database table.

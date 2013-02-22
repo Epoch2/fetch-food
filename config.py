@@ -16,20 +16,24 @@ PORTALN_ACTION = {"post_food" : "post_food",
 
 ERROR_FATAL = {"clear_table" : True,
                "post_entry" : True,
-               "post_info" : False}
+               "post_info" : False,
+               "postback" : True}
 
 AMICA_TYPE_KEY = "ctl00$RegionPageBody$RegionPage$RegionContent$RegionMainContent$RegionMainContentMiddle$MainContentMenu$ctl00$DropDownListMenu"
 AMICA_WEEK_KEY = "ctl00$RegionPageBody$RegionPage$RegionContent$RegionMainContent$RegionMainContentMiddle$MainContentMenu$ctl00$DropDownListMenuWeek"
+
 AMICA_POST_DATA = {"ctl00$RegionPageBody$DefaultScriptManager" : "ctl00$RegionPageBody$DefaultScriptManager|ctl00$RegionPageBody$RegionPage$RegionContent$RegionMainContent$RegionMainContentMiddle$MainContentMenu$ctl00$DropDownListMenuWeek",
                    "ctl00$RegionPageBody$RegionHeader$ctl00$ctl01$SearchText" : "",
-                   "__ASYNCPOST" : "false",
+                   "__ASYNCPOST" : "true",
                    "__EVENTTARGET" : "ctl00$RegionPageBody$RegionPage$RegionContent$RegionMainContent$RegionMainContentMiddle$MainContentMenu$ctl00$DropDownListMenuWeek",
-                   "__LASTFOCUS" : ""}
+                   "__EVENTARGUMENT" : "",
+                   "__LASTFOCUS" : "",
+                   "" : ""}
 
 EMAIL_INFO = {"server" : "send.one.com:2525",
               "user" : "server@jvester.se",
               "from" : "server@jvester.se",
               "to" : "jv@jvester.se"}
 
-CONFIG = {"mail_enabled" : False,
-          "mail_newline" : "\r"}
+CONFIG = {"mail_enabled" : True,
+          "mail_newline" : "\n"}

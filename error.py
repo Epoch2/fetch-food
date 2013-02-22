@@ -28,8 +28,10 @@ class ErrorHandler:
             mail_content = ("A fatal error occurred at:" + nl + nl +
                             datehelper.to_string(datehelper.current_date(), datehelper.PRECISION_DATE) + nl +
                             datehelper.to_string(datehelper.current_date(), datehelper.PRECISION_TIME) + nl + nl +
-                            "FATAL ERROR: " + str(error) + nl + nl +
-                            "These additional (non-fatal) errors occurred during program execution:" + nl +
-                            self.get_errors_compiled(nl))
+                            "FATAL ERROR: " + str(error))
+
+            if self.has_error:
+                mail_content += (nl + nl + "These additional (non-fatal) errors occurred during program execution:" + nl + self.get_errors_compiled(nl))
+            print mail_content
             mail.sendmail(mail_subject, mail_content)
         sys.exit(1)
