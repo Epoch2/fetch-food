@@ -11,7 +11,6 @@ class PropertyParser(object):
         self.page_soup = BeautifulSoup(page)
 
     def reinit(self, page):
-        print "REINIT"
         self.page_soup = BeautifulSoup(page)
 
     def get_selectable_dates(self):
@@ -31,10 +30,10 @@ class PropertyParser(object):
         return entrylist
 
     def get_properties(self):
-        property_soup = self.page_soup.select(PropertyParser.property_identifier)
+        #property_soup = self.page_soup.select(PropertyParser.property_identifier)
         properties =  {}
 
-        for propertytag in property_soup:
+        for propertytag in self.page_soup.findAll(PropertyParser.property_identifier):
             print propertytag
             if propertytag["name"][0] == "_" and propertytag["name"][1] == "_":
                 properties[propertytag["name"]] = propertytag["value"]

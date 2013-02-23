@@ -27,7 +27,7 @@ def get_page_from_url(url):
         page_content = page.read()
         return page_content
 
-def post_data(url, page, headers, data):
+def post_data(url, headers, data):
     data_encoded = urllib.urlencode(data)
     request = urllib2.Request(url, data_encoded, headers)
     try:
@@ -44,14 +44,14 @@ def post_data(url, page, headers, data):
 def post_portaln(action, data={}):
     data["action"] = action
     data["passwd"] = passwd.PORTALN_POST_PASSWD
-    response = post_data(config.PORTALN_POST_URL, config.PORTALN_POST_SUBURL, config.POST_DEFAULT_HEADERS, data)
+    response = post_data(config.PORTALN_POST_URL, config.POST_DEFAULT_HEADERS, data)
     response = response.replace("\n", "").strip()
 
     try:
         response_code = int(response[0] + response[1])
     except ValueError:
-        raise HTTPException("PORTALN.SE", "Internal server error", config.POST_URL + config.POST_SUBURL)
+        raise HTTPException("PORTALN.SE", "Internal server error", config.POST_URL)
     else:
         if response_code != 0:
-            raise HTTPException("FOODAPI", response_data, config.POST_URL + config.POST_SUBURL)
+            raise HTTPException("FOODAPI", response_data, config.POST_URL)
         return True

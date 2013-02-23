@@ -7,8 +7,7 @@ FOOD_UNKNOWN_TYPE = "UNKNOWN_TYPE"
 
 POST_DEFAULT_HEADERS = {"Content-Type": "application/x-www-form-urlencoded", "Accept": "text/plain"}
 
-PORTALN_POST_URL = "www.portaln.se:80"
-PORTALN_POST_SUBURL = "/skola/foodapi.php"
+PORTALN_POST_URL = "www.portaln.se:80/skola/foodapi.php"
 
 PORTALN_ACTION = {"post_food" : "post_food",
                   "post_info" : "post_info",

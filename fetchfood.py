@@ -28,7 +28,7 @@ def generate_food_entries(url, suburl):
         data.update(parser.get_properties())
         data.update(config.AMICA_POST_DATA)
         try:
-            page = http.post_data(url, suburl, headers, data)
+            page = http.post_data(url, headers, data)
         except http.HTTPException:
             raise
         parser.reinit(page)
