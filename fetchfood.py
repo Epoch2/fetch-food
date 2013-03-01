@@ -16,12 +16,13 @@ import error
 import config
 from bs4 import BeautifulSoup
 
-def generate_food_entries(url, suburl):
+def generate_food_entries(url):
     entrylist = []
     page_cache = ""
-    init_page = http.get_page_from_url(url + suburl)
+    init_page = http.get_page_from_url(url)
     parser = parse.PropertyParser(init_page)
     for date in parser.get_selectable_dates():
+        print "let's post a page yo'"
         headers = config.POST_DEFAULT_HEADERS
         data = {config.AMICA_TYPE_KEY : "Lunch",
                 config.AMICA_WEEK_KEY : date}
@@ -74,7 +75,7 @@ def round_time(time):
 def main():
     errorhandler = error.ErrorHandler()
     try:
-        entrylist = generate_food_entries(config.TARGET_URL, config.TARGET_SUBURL)
+        entrylist = generate_food_entries(config.TARGET_URL)
     except http.HTTPException as e:
         errorhandler.add_error(e, config.ERROR_FATAL["postback"])
 

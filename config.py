@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
-TARGET_URL = "http://www.amica.se:80"
-TARGET_SUBURL = "/nackagymnasium"
+TARGET_URL = "http://www.amica.se:80/nackagymnasium"
 
 FOOD_DEFAULT_TYPE = u"Extrarätt"
 FOOD_UNKNOWN_TYPE = "UNKNOWN_TYPE"
