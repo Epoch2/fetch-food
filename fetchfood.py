@@ -22,7 +22,6 @@ def generate_food_entries(url):
     init_page = http.get_page_from_url(url)
     parser = parse.PropertyParser(init_page)
     for date in parser.get_selectable_dates():
-        print "let's post a page yo'"
         headers = config.POST_DEFAULT_HEADERS
         data = {config.AMICA_TYPE_KEY : "Lunch",
                 config.AMICA_WEEK_KEY : date}
@@ -42,8 +41,8 @@ def generate_food_entries(url):
         food_generator = food.FoodEntryGenerator(datehelper.to_date(date))
         entrylist_special = []
 
-        for entry in parser.get_entry_list():
-            entry = food_generator.generate_entry(plaintext)
+        for entry_plaintext in parser.get_entry_list():
+            entry = food_generator.generate_entry(entry_plaintext)
 
             if entry is not None:
                 if entry.hasinfo:
@@ -56,12 +55,37 @@ def generate_food_entries(url):
             entrylist.append(entry)
     return entrylist
 
+def generate_food_entries(url):
+    entrylist = []
+    page_cache = ""
+    init_page = http.get_page_from_url(url)
+    parser = parse.PropertyParser(init_page)
+
+    date = parser.get_selectable_dates()[0]
+
+    food_generator = food.FoodEntryGenerator(datehelper.to_date(date))
+    entrylist_special = []
+
+    for entry_plaintext in parser.get_entry_list():
+        entry = food_generator.generate_entry(entry_plaintext)
+
+        if entry is not None:
+            if entry.hasinfo:
+                entrylist_special.append(entry)
+            else:
+                entrylist.append(entry)
+
+    for entry in entrylist_special:
+        entry.info = food_generator.generated_info
+        entrylist.append(entry)
+    return entrylist
+
 def post_entries(entrylist):
     entrycount = 0
     for entry in entrylist:
         postdata = entry.get_data();
         try:
-            post.post_portaln(config.PORTALN_ACTION["post_food"], postdata)
+            http.post_portaln(config.PORTALN_ACTION["post_food"], postdata)
             entrycount += 1
         except http.HTTPException as e:
             raise

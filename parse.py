@@ -34,7 +34,6 @@ class PropertyParser(object):
         properties =  {}
 
         for propertytag in self.page_soup.findAll(PropertyParser.property_identifier):
-            print propertytag
             if propertytag["name"][0] == "_" and propertytag["name"][1] == "_":
                 properties[propertytag["name"]] = propertytag["value"]
         return properties
