@@ -28,6 +28,19 @@ AMICA_POST_DATA = {"ctl00$RegionPageBody$DefaultScriptManager" : "ctl00$RegionPa
                    "__LASTFOCUS" : "",
                    "" : ""}
 
+AMICA_HEADERS = {"Accept" : "*/*",
+                 "Accept-Charset" : "UTF-8,*",
+                 "Accept-Language" : "en-US,en",
+                 "Cache-Control" : "no-cache",
+                 "Content-Type" : "application/x-www-form-urlencoded; charset=UTF-8",
+                 "DNT" : "1",
+                 "Host" : "www.amica.se",
+                 "Origin" : "http://www.amica.se",
+                 "Referer" : "http://www.amica.se/Ata-hos-Amica/Restauranger/Stockholm/Nacka/Nacka-gymnasium/",
+                 "User-Agent" : "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_2) AppleWebKit/537.22 (KHTML, like Gecko) Chrome/25.0.1364.155 Safari/537.22",
+                 "X-MicrosoftAjax" : "Delta=true",
+                 "X-Requested-With" : "XMLHttpRequest"}
+
 EMAIL_INFO = {"server" : "send.one.com:2525",
               "user" : "server@jvester.se",
               "from" : "server@jvester.se",

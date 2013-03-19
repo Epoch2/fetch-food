@@ -16,13 +16,14 @@ import error
 import config
 from bs4 import BeautifulSoup
 
-def generate_food_entries(url):
+def a_generate_food_entries(url):
     entrylist = []
     page_cache = ""
     init_page = http.get_page_from_url(url)
     parser = parse.PropertyParser(init_page)
     for date in parser.get_selectable_dates():
         headers = config.POST_DEFAULT_HEADERS
+        headers.update(config.AMICA_HEADERS)
         data = {config.AMICA_TYPE_KEY : "Lunch",
                 config.AMICA_WEEK_KEY : date}
         data.update(parser.get_properties())
@@ -83,7 +84,7 @@ def generate_food_entries(url):
 def post_entries(entrylist):
     entrycount = 0
     for entry in entrylist:
-        postdata = entry.get_data();
+        postdata = entry.get_data()
         try:
             http.post_portaln(config.PORTALN_ACTION["post_food"], postdata)
             entrycount += 1
