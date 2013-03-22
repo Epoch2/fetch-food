@@ -16,6 +16,19 @@ import error
 import config
 from bs4 import BeautifulSoup
 
+def clear_duplicates(_list):
+    for item in _list:
+        duplicates = 0
+        for compare_item in _list:
+            if item == compare_item:
+                duplicates += 1
+        if duplicates >= 2:
+            duplicates -= 1
+            for i in xrange(duplicates):
+                _list.remove(item)
+
+    return _list
+
 def a_generate_food_entries(url):
     entrylist = []
     page_cache = ""
@@ -54,7 +67,8 @@ def a_generate_food_entries(url):
         for entry in entrylist_special:
             entry.info = food_generator.generated_info
             entrylist.append(entry)
-    return entrylist
+
+    return clear_duplicates(entrylist)
 
 def generate_food_entries(url):
     entrylist = []
@@ -79,7 +93,8 @@ def generate_food_entries(url):
     for entry in entrylist_special:
         entry.info = food_generator.generated_info
         entrylist.append(entry)
-    return entrylist
+
+    return clear_duplicates(entrylist)
 
 def post_entries(entrylist):
     entrycount = 0
@@ -115,7 +130,10 @@ def main():
         errorhandler.add_error(e, config.ERROR_FATAL["post_entry"])
 
     nl = config.CONFIG["mail_newline"]
-    mail_content = ("fetchfood.py completed at:" + nl + nl + datehelper.to_string(datehelper.current_date(), datehelper.PRECISION_DATE) + nl + datehelper.to_string(datehelper.current_date(), datehelper.PRECISION_TIME) + nl + nl + "Entries posted: " + str(entrycount))
+    mail_content = ("fetchfood.py completed at:" + nl + nl +
+    datehelper.to_string(datehelper.current_date(), datehelper.PRECISION_DATE) + nl +
+    datehelper.to_string(datehelper.current_date(), datehelper.PRECISION_TIME) + nl + nl +
+    "Entries posted: " + str(entrycount))
 
     if errorhandler.has_error:
         mail_content += nl + nl + "These (non-fatal) errors occurred during execution:" + nl + errorhandler.get_errors_compiled()
