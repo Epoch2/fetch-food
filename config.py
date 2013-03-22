@@ -37,7 +37,7 @@ AMICA_HEADERS = {"Accept" : "*/*",
                  "Host" : "www.amica.se",
                  "Origin" : "http://www.amica.se",
                  "Referer" : "http://www.amica.se/Ata-hos-Amica/Restauranger/Stockholm/Nacka/Nacka-gymnasium/",
-                 "User-Agent" : "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_2) AppleWebKit/537.22 (KHTML, like Gecko) Chrome/25.0.1364.155 Safari/537.22",
+                 "User-Agent" : "Portaln - Skola (fetch-food)",
                  "X-MicrosoftAjax" : "Delta=true",
                  "X-Requested-With" : "XMLHttpRequest"}
 
