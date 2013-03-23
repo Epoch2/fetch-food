@@ -44,7 +44,7 @@ AMICA_HEADERS = {"Accept" : "*/*",
 EMAIL_INFO = {"server" : "send.one.com:2525",
               "user" : "server@jvester.se",
               "from" : "server@jvester.se",
-              "to" : "jv@jvester.se"}
+              "to" : ["jv@jvester.se", "adam@adsa.se"]}
 
 CONFIG = {"mail_enabled" : True,
           "mail_newline" : "\n"}
