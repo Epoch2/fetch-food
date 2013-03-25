@@ -29,7 +29,7 @@ class FoodEntry:
 
 class FoodEntryGenerator:
 
-    REGEX_TYPE = r".+?(?=\s*[A-ZÅÄÖ])"      #matches Lunch, Soppa, etc
+    REGEX_TYPE = u".+?(?=\s*[A-ZÅÄÖ])"      #matches Lunch, Soppa, etc
     REGEX_WEEK = r"v\.\d{1,2}$"             #matches v.3, v.24, etc
     REGEX_INFO = r"^\*=.+$"                 #matches *=innehåller fläskött, etc
     REGEX_GOODMEAL = r"^Smaklig.*"          #matches Smaklig Måltid
@@ -44,7 +44,7 @@ class FoodEntryGenerator:
 
     def generate_entry(self, entry_string):
         if datehelper.is_weekday(entry_string):
-            new_weekday = datehelper.weekday_to_weeknumber(entry_string, self.weekday)
+            new_weekday = datehelper.weekday_to_weekdaynumber(entry_string, self.weekday)
             if new_weekday > self.weekday:
                 self.weekday = new_weekday
                 self.date = datehelper.weekday_to_date(self.init_date, self.weekday)

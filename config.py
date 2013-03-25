@@ -1,31 +1,53 @@
 # -*- coding: utf-8 -*-
-TARGET_URL = "http://www.amica.se/nackagymnasium"
-TARGET_CONTENT_OUTER_IDENTIFIER = "div#ctl00_RegionPageBody_RegionPage_RegionContent_RegionMainContent_RegionMainContentMiddle_MainContentMenu_ctl00_MenuUpdatePanel"
-TARGET_CONTENT_INNER_IDENTIFIER = "div[class-=ContentArea]"
-TARGET_DATE_IDENTIFIER = "h2#ctl00_RegionPageBody_RegionPage_RegionContent_RegionMainContent_RegionMainContentMiddle_MainContentMenu_ctl00_HeadingMenu"
+TARGET_URL = "http://www.amica.se:80/nackagymnasium"
 
 FOOD_DEFAULT_TYPE = u"Extrarätt"
 FOOD_UNKNOWN_TYPE = "UNKNOWN_TYPE"
 
-ACTION_POST_FOOD = "post_food"
-ACTION_POST_INFO = "post_info"
-ACTION_CLEAR_TABLE = "clear_table"
+POST_DEFAULT_HEADERS = {"Content-Type": "application/x-www-form-urlencoded", "Accept": "text/plain"}
 
-ERROR_CLEAR_TABLE_FATAL = True
-ERROR_POST_ENTRY_FATAL = True
-ERROR_POST_INFO_FATAL = False
+PORTALN_POST_URLS = ["http://www.portaln.se:80/skola/foodapi.php", "http://latest.portaln.se:80/skola/foodapi.php"]
 
-POST_TYPE_TYPE = "type"
-POST_TYPE_TIME = "time"
+PORTALN_ACTION = {"post_food" : "post_food",
+                  "post_info" : "post_info",
+                  "clear_table" : "clear_table"}
 
-POST_URL = "www.portaln.se:80"
-POST_PAGE = "/skola/foodapi.php"
-POST_HEADERS = {"Content-Type": "application/x-www-form-urlencoded", "Accept": "text/plain"}
+ERROR_FATAL = {"clear_table" : True,
+               "post_entry" : True,
+               "post_info" : False,
+               "postback" : True}
 
-EMAIL_SERVER = "send.one.com:2525"
-EMAIL_USER = "server@jvester.se"
-EMAIL_FROM = "server@jvester.se"
-EMAIL_TO = "jv@jvester.se"
+AMICA_TYPE_KEY = "ctl00$RegionPageBody$RegionPage$RegionContent$RegionMainContent$RegionMainContentMiddle$MainContentMenu$ctl00$DropDownListMenu"
+AMICA_WEEK_KEY = "ctl00$RegionPageBody$RegionPage$RegionContent$RegionMainContent$RegionMainContentMiddle$MainContentMenu$ctl00$DropDownListMenuWeek"
 
 CONFIG_MAIL_ENABLED = True
 CONFIG_MAIL_NEWLINE = "\r"
+
+AMICA_POST_DATA = {"ctl00$RegionPageBody$DefaultScriptManager" : "ctl00$RegionPageBody$DefaultScriptManager|ctl00$RegionPageBody$RegionPage$RegionContent$RegionMainContent$RegionMainContentMiddle$MainContentMenu$ctl00$DropDownListMenuWeek",
+                   "ctl00$RegionPageBody$RegionHeader$ctl00$ctl01$SearchText" : "",
+                   "__ASYNCPOST" : "true",
+                   "__EVENTTARGET" : "ctl00$RegionPageBody$RegionPage$RegionContent$RegionMainContent$RegionMainContentMiddle$MainContentMenu$ctl00$DropDownListMenuWeek",
+                   "__EVENTARGUMENT" : "",
+                   "__LASTFOCUS" : "",
+                   "" : ""}
+
+AMICA_HEADERS = {"Accept" : "*/*",
+                 "Accept-Charset" : "UTF-8,*",
+                 "Accept-Language" : "en-US,en",
+                 "Cache-Control" : "no-cache",
+                 "Content-Type" : "application/x-www-form-urlencoded; charset=UTF-8",
+                 "DNT" : "1",
+                 "Host" : "www.amica.se",
+                 "Origin" : "http://www.amica.se",
+                 "Referer" : "http://www.amica.se/Ata-hos-Amica/Restauranger/Stockholm/Nacka/Nacka-gymnasium/",
+                 "User-Agent" : "Portaln - Skola (fetch-food)",
+                 "X-MicrosoftAjax" : "Delta=true",
+                 "X-Requested-With" : "XMLHttpRequest"}
+
+EMAIL_INFO = {"server" : "send.one.com:2525",
+              "user" : "server@jvester.se",
+              "from" : "server@jvester.se",
+              "to" : ["jv@jvester.se", "adam@adsa.se"]}
+
+CONFIG = {"mail_enabled" : False,
+          "mail_newline" : "\r"}

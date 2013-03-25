@@ -4,27 +4,84 @@
 # FetchFood
 # Fetch menu data from page, structurize it and POST it to webserver.
 
-import urllib2
+import urllib
 import re
-import time
 import sys
+import http
+import parse
 import datehelper
 import food
-import post
 import mail
 import error
 import config
-import passwd
-from bs4 import BeautifulSoup
 
-def generate_food_entries(date, soup):
+def clear_duplicates(_list):
+    for item in _list:
+        duplicates = 0
+        for compare_item in _list:
+            if item == compare_item:
+                duplicates += 1
+        if duplicates >= 2:
+            duplicates -= 1
+            for i in xrange(duplicates):
+                _list.remove(item)
+
+    return _list
+
+def a_generate_food_entries(url):
     entrylist = []
-    entrylist_special = []
-    food_generator = food.FoodEntryGenerator(date)
+    page_cache = ""
+    init_page = http.get_page_from_url(url)
+    parser = parse.PropertyParser(init_page)
+    for date in parser.get_selectable_dates():
+        headers = config.POST_DEFAULT_HEADERS
+        headers.update(config.AMICA_HEADERS)
+        data = {config.AMICA_TYPE_KEY : "Lunch",
+                config.AMICA_WEEK_KEY : date}
+        data.update(parser.get_properties())
+        data.update(config.AMICA_POST_DATA)
+        try:
+            page = http.post_data(url, headers, data)
+        except http.HTTPException:
+            raise
+        parser.reinit(page)
+        if page in page_cache:
+            print "same shit"
+        else:
+            print "different shit"
+            page_cache = page
 
-    for p_tag in soup:
-        plaintext = p_tag.contents[0].strip() #html -> plaintext
-        entry = food_generator.generate_entry(plaintext)
+        food_generator = food.FoodEntryGenerator(datehelper.to_date(date))
+        entrylist_special = []
+
+        for entry_plaintext in parser.get_entry_list():
+            entry = food_generator.generate_entry(entry_plaintext)
+
+            if entry is not None:
+                if entry.hasinfo:
+                    entrylist_special.append(entry)
+                else:
+                    entrylist.append(entry)
+
+        for entry in entrylist_special:
+            entry.info = food_generator.generated_info
+            entrylist.append(entry)
+
+    return clear_duplicates(entrylist)
+
+def generate_food_entries(url):
+    entrylist = []
+    page_cache = ""
+    init_page = http.get_page_from_url(url)
+    parser = parse.PropertyParser(init_page)
+
+    date = parser.get_selectable_dates()[0]
+
+    food_generator = food.FoodEntryGenerator(datehelper.to_date(date))
+    entrylist_special = []
+
+    for entry_plaintext in parser.get_entry_list():
+        entry = food_generator.generate_entry(entry_plaintext)
 
         if entry is not None:
             if entry.hasinfo:
@@ -35,74 +92,54 @@ def generate_food_entries(date, soup):
     for entry in entrylist_special:
         entry.info = food_generator.generated_info
         entrylist.append(entry)
-    return entrylist
+
+    return clear_duplicates(entrylist)
+
+def post_entries(entrylist):
+    entrycount = 0
+    for entry in entrylist:
+        postdata = entry.get_data()
+        try:
+            http.post_portaln(config.PORTALN_ACTION["post_food"], postdata)
+            entrycount += 1
+        except http.HTTPException as e:
+            raise
+    return entrycount
 
 def round_time(time):
     return str(round(time, 4))
 
 #####
 
-exec_timekeys = ["total", "target_request", "generate_entries", "clear_table", "post_entry_all"]
-exec_timekeys_description = ["Total execution time", "Time getting menu", "Time generating entries", "Time clearing DB", "Time posting to DB"]
-exec_times = [0]*5
-exec_times[0] = time.time()
-exec_times[1] = time.time()
-errorhandler = error.ErrorHandler()
-
-try:
-    page = urllib2.urlopen(config.TARGET_URL)
-except urllib2.HTTPError as e:
-    errorhandler.add_error(e, True)
-except urllib2.URLError as e:
-    errorhandler.add_error(e, True)
-exec_times[1] = time.time() - exec_times[1]
-
-page_soup = BeautifulSoup(page)
-page.close()
-date_soup = page_soup.select(config.TARGET_DATE_IDENTIFIER)
-date_plaintext = date_soup[0].contents[0].strip()
-date = datehelper.find_date(date_plaintext)
-content_soup = page_soup.select(config.TARGET_CONTENT_OUTER_IDENTIFIER + " " + config.TARGET_CONTENT_INNER_IDENTIFIER + " p")
-exec_times[2] = time.time()
-entrylist = generate_food_entries(date, content_soup)
-exec_times[2] = time.time() - exec_times[2]
-exec_times[3] = time.time()
-try:
-    post.post(config.ACTION_CLEAR_TABLE) #Clear database table.
-except post.PostException as e:
-    errorhandler.add_error(e, config.ERROR_CLEAR_TABLE_FATAL)
-exec_times[3] = time.time() - exec_times[3]
-exec_times[4] = time.time()
-entrycount = 0
-try:
-    entrycount = post.post_entries(entrylist)
-except post.PostException as e:
-    errorhandler.add_error(e, config.ERROR_POST_ENTRY_FATAL)
-
-exec_times[4] = time.time() - exec_times[4]
-exec_times[0] = time.time() - exec_times[0]
-
-for i, time in enumerate(exec_times):
-    postdata = {config.POST_TYPE_TYPE : exec_timekeys[i],
-                config.POST_TYPE_TIME : time}
+def main():
+    errorhandler = error.ErrorHandler()
     try:
-        post.post(config.ACTION_POST_INFO, postdata)
-    except post.PostException as e:
-        errorhandler.add_error(e, config.ERROR_POST_INFO_FATAL)
+        entrylist = generate_food_entries(config.TARGET_URL)
+    except http.HTTPException as e:
+        errorhandler.add_error(e, config.ERROR_FATAL["postback"])
 
-nl = config.CONFIG_MAIL_NEWLINE
-mail_content = ("fetchfood.py completed at:" + nl + nl + datehelper.to_string(datehelper.current_date(), datehelper.PRECISION_DATE) + nl + datehelper.to_string(datehelper.current_date(), datehelper.PRECISION_TIME) + nl + nl + "Entries posted: " + str(entrycount))
-exec_times_string_list = [mail_content]
-for i, t in enumerate(exec_times):
-    if i == 0:
-        indent = ""
-    else:
-        indent = "    "
-    exec_times_string_list.append(nl + indent + exec_timekeys_description[i] + ": " + round_time(t) + "s")
-mail_content = "".join(exec_times_string_list)
-if errorhandler.has_error:
-    mail_content += nl + nl + "These (non-fatal) errors occurred during execution:" + nl + errorhandler.get_errors_compiled()
+    try:
+        http.post_portaln(config.PORTALN_ACTION["clear_table"]) #Clear database table.
+    except http.HTTPException as e:
+        errorhandler.add_error(e, config.ERROR_FATAL["clear_table"])
+    entrycount = 0
+    try:
+        entrycount = post_entries(entrylist)
+    except http.HTTPException as e:
+        errorhandler.add_error(e, config.ERROR_FATAL["post_entry"])
 
-if config.CONFIG_MAIL_ENABLED:
-    mail.sendmail("FetchFood Completed!", mail_content)
-sys.exit(0)
+    nl = config.CONFIG["mail_newline"]
+    mail_content = ("fetchfood.py completed at:" + nl + nl +
+    datehelper.to_string(datehelper.current_date(), datehelper.PRECISION_DATE) + nl +
+    datehelper.to_string(datehelper.current_date(), datehelper.PRECISION_TIME) + nl + nl +
+    "Entries posted: " + str(entrycount))
+
+    if errorhandler.has_error:
+        mail_content += nl + nl + "These (non-fatal) errors occurred during execution:" + nl + errorhandler.get_errors_compiled()
+
+    if config.CONFIG["mail_enabled"]:
+        mail.sendmail("FetchFood Completed!", mail_content)
+    sys.exit(0)
+
+if __name__ == "__main__":
+    main()
