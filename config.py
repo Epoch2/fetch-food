@@ -46,5 +46,5 @@ EMAIL_INFO = {"server" : "send.one.com:2525",
               "from" : "server@jvester.se",
               "to" : ["jv@jvester.se", "adam@adsa.se"]}
 
-CONFIG = {"mail_enabled" : True,
-          "mail_newline" : "\n"}
+CONFIG = {"mail_enabled" : False,
+          "mail_newline" : "\r"}
