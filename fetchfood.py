@@ -7,6 +7,7 @@
 import urllib
 import re
 import sys
+import time
 import http
 import parse
 import datehelper
@@ -112,6 +113,7 @@ def round_time(time):
 #####
 
 def main():
+    start_time = time.time()
     errorhandler = error.ErrorHandler()
     try:
         entrylist = generate_food_entries(config.TARGET_URL)
@@ -128,11 +130,14 @@ def main():
     except http.HTTPException as e:
         errorhandler.add_error(e, config.ERROR_FATAL["post_entry"])
 
+    total_time = time.time() - start_time
+
     nl = config.CONFIG["mail_newline"]
     mail_content = ("fetchfood.py completed at:" + nl + nl +
     datehelper.to_string(datehelper.current_date(), datehelper.PRECISION_DATE) + nl +
     datehelper.to_string(datehelper.current_date(), datehelper.PRECISION_TIME) + nl + nl +
-    "Entries posted: " + str(entrycount))
+    "Entries posted: " + str(entrycount) + nl +
+    "Execution time: %.1fs") % total_time
 
     if errorhandler.has_error:
         mail_content += nl + nl + "These (non-fatal) errors occurred during execution:" + nl + errorhandler.get_errors_compiled()
