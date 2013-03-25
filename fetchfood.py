@@ -14,7 +14,6 @@ import food
 import mail
 import error
 import config
-from bs4 import BeautifulSoup
 
 def clear_duplicates(_list):
     for item in _list:

@@ -4,7 +4,6 @@ import httplib
 import mail
 import config
 import passwd
-from bs4 import BeautifulSoup
 
 class HTTPException(Exception):
 

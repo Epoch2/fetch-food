@@ -22,8 +22,8 @@ class ErrorHandler:
         return "".join(errorlist_compiled)
 
     def send_fatal(self, error):
-        nl = config.CONFIG["mail_newline"]
         if config.CONFIG["mail_enabled"]:
+            nl = config.CONFIG["mail_newline"]
             mail_subject = "FetchFood FAILED!"
             mail_content = ("A fatal error occurred at:" + nl + nl +
                             datehelper.to_string(datehelper.current_date(), datehelper.PRECISION_DATE) + nl +
