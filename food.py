@@ -29,7 +29,7 @@ class FoodEntry:
 
 class FoodEntryGenerator:
 
-    REGEX_TYPE = r".+?(?=\s*[A-ZÅÄÖ])"      #matches Lunch, Soppa, etc
+    REGEX_TYPE = u".+?(?=\s*[A-ZÅÄÖ])"      #matches Lunch, Soppa, etc
     REGEX_WEEK = r"v\.\d{1,2}$"             #matches v.3, v.24, etc
     REGEX_INFO = r"^\*=.+$"                 #matches *=innehåller fläskött, etc
     REGEX_GOODMEAL = r"^Smaklig.*"          #matches Smaklig Måltid
