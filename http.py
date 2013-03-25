@@ -44,14 +44,16 @@ def post_data(url, headers, data):
 def post_portaln(action, data={}):
     data["action"] = action
     data["passwd"] = passwd.PORTALN_POST_PASSWD
-    response = post_data(config.PORTALN_POST_URL, config.POST_DEFAULT_HEADERS, data)
-    response = response.replace("\n", "").strip()
 
-    try:
-        response_code = int(response[0] + response[1])
-    except ValueError:
-        raise HTTPException("PORTALN.SE", "Internal server error", config.POST_URL)
-    else:
-        if response_code != 0:
-            raise HTTPException("FOODAPI", response_data, config.POST_URL)
-        return True
+    for url in config.PORTALN_POST_URLS:
+        response = post_data(url, config.POST_DEFAULT_HEADERS, data)
+        response = response.replace("\n", "").strip()
+
+        try:
+            response_code = int(response[0] + response[1])
+        except ValueError:
+            raise HTTPException("PORTALN.SE", "Internal server error", config.POST_URL)
+        else:
+            if response_code != 0:
+                raise HTTPException("FOODAPI", response_data, config.POST_URL)
+    return True
