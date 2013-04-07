@@ -30,7 +30,7 @@ def post_data(url, headers, data):
     data_encoded = urllib.urlencode(data)
     request = urllib2.Request(url, data_encoded, headers)
     try:
-        page = urllib2.urlopen(request)
+        page = urllib2.urlopen(request, timeout=config.POST_TIMEOUT)
     except urllib2.HTTPError as e:
         raise HTTPException("POST", e, url)
     except urllib2.URLError as e:
@@ -40,19 +40,23 @@ def post_data(url, headers, data):
         page.close()
         return page_content
 
-def post_portaln(action, data={}):
+def post_portaln(url, action, data={}):
     data["action"] = action
     data["passwd"] = passwd.PORTALN_POST_PASSWD
 
-    for url in config.PORTALN_POST_URLS:
+    try:
         response = post_data(url, config.POST_DEFAULT_HEADERS, data)
+    except HTTPException as e:
+        raise
+    else:
         response = response.replace("\n", "").strip()
 
-        try:
-            response_code = int(response[0] + response[1])
-        except ValueError:
-            raise HTTPException("PORTALN.SE", "Internal server error", config.POST_URL)
+    try:
+        response_code = int(response[0] + response[1])
+    except ValueError:
+        raise HTTPException("PORTALN.SE", "Internal server error", config.POST_URL)
+    else:
+        if response_code != 0:
+            raise HTTPException("FOODAPI", response_data, config.POST_URL)
         else:
-            if response_code != 0:
-                raise HTTPException("FOODAPI", response_data, config.POST_URL)
-    return True
+            return True

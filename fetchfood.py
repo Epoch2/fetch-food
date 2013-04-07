@@ -96,19 +96,16 @@ def generate_food_entries(url):
 
     return clear_duplicates(entrylist)
 
-def post_entries(entrylist):
+def post_entries(url, entrylist):
     entrycount = 0
     for entry in entrylist:
         postdata = entry.get_data()
         try:
-            http.post_portaln(config.PORTALN_ACTION["post_food"], postdata)
+            http.post_portaln(url, config.PORTALN_ACTION["post_food"], postdata)
             entrycount += 1
         except http.HTTPException as e:
             raise
     return entrycount
-
-def round_time(time):
-    return str(round(time, 4))
 
 #####
 
@@ -120,15 +117,16 @@ def main():
     except http.HTTPException as e:
         errorhandler.add_error(e, config.ERROR_FATAL["postback"])
 
-    try:
-        http.post_portaln(config.PORTALN_ACTION["clear_table"]) #Clear database table.
-    except http.HTTPException as e:
-        errorhandler.add_error(e, config.ERROR_FATAL["clear_table"])
     entrycount = 0
-    try:
-        entrycount = post_entries(entrylist)
-    except http.HTTPException as e:
-        errorhandler.add_error(e, config.ERROR_FATAL["post_entry"])
+    for url in config.PORTALN_POST_URLS:
+        try:
+            http.post_portaln(url, config.PORTALN_ACTION["clear_table"]) #Clear database table.
+        except http.HTTPException as e:
+            errorhandler.add_error(e, config.ERROR_FATAL["clear_table"])
+        try:
+            entrycount = post_entries(url, entrylist)
+        except http.HTTPException as e:
+            errorhandler.add_error(e, config.ERROR_FATAL["post_entry"])
 
     total_time = time.time() - start_time
 
@@ -140,10 +138,13 @@ def main():
     "Execution time: %.1fs") % total_time
 
     if errorhandler.has_error:
+        print("error")
         mail_content += nl + nl + "These (non-fatal) errors occurred during execution:" + nl + errorhandler.get_errors_compiled()
 
     if config.CONFIG["mail_enabled"]:
         mail.sendmail("FetchFood Completed!", mail_content)
+    elif config.DEBUG:
+        print(mail_content)
     sys.exit(0)
 
 if __name__ == "__main__":

@@ -30,7 +30,6 @@ class PropertyParser(object):
         return entrylist
 
     def get_properties(self):
-        #property_soup = self.page_soup.select(PropertyParser.property_identifier)
         properties =  {}
 
         for propertytag in self.page_soup.findAll(PropertyParser.property_identifier):
