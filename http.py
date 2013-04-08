@@ -42,6 +42,7 @@ def post_data(url, headers, data):
 
 def post_portaln(url, action, data={}):
     data["action"] = action
+    data["school"] = config.PORTALN_SCHOOL_ID
     data["passwd"] = passwd.PORTALN_POST_PASSWD
 
     try:

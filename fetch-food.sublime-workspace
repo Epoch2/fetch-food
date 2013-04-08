@@ -8,9 +8,13 @@
 	"build_system": "",
 	"command_palette":
 	{
-		"height": 392.0,
+		"height": 327.0,
 		"selected_items":
 		[
+			[
+				"packa",
+				"Package Control: List Packages"
+			],
 			[
 				"ls",
 				"Sort Lines (Case Sensitive)"
@@ -28,7 +32,7 @@
 				"Set Syntax: Java"
 			]
 		],
-		"width": 392.0
+		"width": 449.0
 	},
 	"console":
 	{
@@ -45,6 +49,7 @@
 	},
 	"file_history":
 	[
+		"/Users/jv/Library/Application Support/Sublime Text 2/Packages/Default/Preferences.sublime-settings",
 		"/Users/jv/Development/fetch-food/.gitignore",
 		"/Users/jv/Development/fetch-food/fetch-food.json",
 		"/Users/jv/Development/brute-force/checks.py",
@@ -52,7 +57,6 @@
 		"/Users/jv/Development/brute-force/bruteforce.py",
 		"/Users/jv/Development/brute-force/project.json",
 		"/Users/jv/Desktop/Test.java",
-		"/Users/jv/Library/Application Support/Sublime Text 2/Packages/Default/Preferences.sublime-settings",
 		"/Users/jv/Development/fetch-food/fetchfood.py",
 		"/Users/jv/Library/Application Support/Sublime Text 2/Packages/User/Preferences.sublime-settings"
 	],

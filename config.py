@@ -13,6 +13,8 @@ PORTALN_ACTION = {"post_food" : "post_food",
                   "post_info" : "post_info",
                   "clear_table" : "clear_table"}
 
+PORTALN_SCHOOL_ID = "ng"
+
 ERROR_FATAL = {"clear_table" : False,
                "post_entry" : False,
                "post_info" : False,
@@ -48,6 +50,6 @@ EMAIL_INFO = {"server" : "send.one.com:2525",
               "to" : ["jv@jvester.se", "adam@adsa.se"]}
 
 CONFIG = {"mail_enabled" : False,
-          "mail_newline" : "\r"}
+          "mail_newline" : "\n"}
 
 DEBUG = True
