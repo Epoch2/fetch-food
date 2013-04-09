@@ -58,6 +58,6 @@ def post_portaln(url, action, data={}):
         raise HTTPException("PORTALN.SE", "Internal server error", config.POST_URL)
     else:
         if response_code != 0:
-            raise HTTPException("FOODAPI", response_data, config.POST_URL)
+            raise HTTPException("FOODAPI", response, config.POST_URL)
         else:
             return True
