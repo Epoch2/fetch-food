@@ -53,11 +53,14 @@ def post_portaln(url, action, data={}):
         response = response.replace("\n", "").strip()
 
     try:
+        print(response)
         response_code = int(response[0] + response[1])
     except ValueError:
-        raise HTTPException("PORTALN.SE", "Internal server error", config.POST_URL)
+        pass
+        # raise HTTPException("PORTALN.SE", "Internal server error", config.POST_URL)
     else:
         if response_code != 0:
-            raise HTTPException("FOODAPI", response, config.POST_URL)
+            pass
+            # raise HTTPException("FOODAPI", response, config.POST_URL)
         else:
             return True
